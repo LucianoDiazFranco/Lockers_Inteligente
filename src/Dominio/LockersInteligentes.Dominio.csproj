@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>LockersInteligentes.Dominio</RootNamespace>
+    <AssemblyName>LockersInteligentes.Dominio</AssemblyName>
+  </PropertyGroup>
+  <!-- El Dominio NO referencia a nadie. Es la base de la piramide. -->
+</Project>

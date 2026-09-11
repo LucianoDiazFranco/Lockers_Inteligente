@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>LockersInteligentes.UI</RootNamespace>
+    <AssemblyName>LockersInteligentes.UI</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dominio\LockersInteligentes.Dominio.csproj" />
+    <ProjectReference Include="..\BLL\LockersInteligentes.BLL.csproj" />
+  </ItemGroup>
+</Project>

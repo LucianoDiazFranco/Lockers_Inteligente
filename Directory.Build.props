@@ -1,0 +1,11 @@
+<Project>
+  <!-- Propiedades comunes a todos los proyectos de la solucion.
+       Evita repetir configuracion en cada .csproj. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <NeutralLanguage>es</NeutralLanguage>
+  </PropertyGroup>
+</Project>
