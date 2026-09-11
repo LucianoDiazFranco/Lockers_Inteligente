@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>LockersInteligentes.DAL</RootNamespace>
     <AssemblyName>LockersInteligentes.DAL</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArqBase\LockersInteligentes.ArqBase.csproj" />
     <ProjectReference Include="..\Dominio\LockersInteligentes.Dominio.csproj" />
   </ItemGroup>
   <ItemGroup>
