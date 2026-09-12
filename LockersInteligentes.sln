@@ -1,16 +1,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.39.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12201.205 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-32CC-A25E-83B93B4A2A61}") = "LockersInteligentes.Dominio", "src\Dominio\LockersInteligentes.Dominio.csproj", "{A1111111-1111-4111-8111-111111111111}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockersInteligentes.Dominio", "src\Dominio\LockersInteligentes.Dominio.csproj", "{A1111111-1111-4111-8111-111111111111}"
 EndProject
-Project("{9A19103F-16F7-32CC-A25E-83B93B4A2A61}") = "LockersInteligentes.DAL", "src\DAL\LockersInteligentes.DAL.csproj", "{A2222222-2222-4222-8222-222222222222}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockersInteligentes.DAL", "src\DAL\LockersInteligentes.DAL.csproj", "{A2222222-2222-4222-8222-222222222222}"
 EndProject
-Project("{9A19103F-16F7-32CC-A25E-83B93B4A2A61}") = "LockersInteligentes.ArqBase", "src\ArqBase\LockersInteligentes.ArqBase.csproj", "{A3333333-3333-4333-8333-333333333333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockersInteligentes.ArqBase", "src\ArqBase\LockersInteligentes.ArqBase.csproj", "{A3333333-3333-4333-8333-333333333333}"
 EndProject
-Project("{9A19103F-16F7-32CC-A25E-83B93B4A2A61}") = "LockersInteligentes.BLL", "src\BLL\LockersInteligentes.BLL.csproj", "{A4444444-4444-4444-8444-444444444444}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockersInteligentes.BLL", "src\BLL\LockersInteligentes.BLL.csproj", "{A4444444-4444-4444-8444-444444444444}"
 EndProject
-Project("{9A19103F-16F7-32CC-A25E-83B93B4A2A61}") = "LockersInteligentes.UI", "src\UI\LockersInteligentes.UI.csproj", "{A5555555-5555-4555-8555-555555555555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockersInteligentes.UI", "src\UI\LockersInteligentes.UI.csproj", "{A5555555-5555-4555-8555-555555555555}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +41,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F888E43-2D0A-47E6-8622-9C2614BC8BFE}
 	EndGlobalSection
 EndGlobal

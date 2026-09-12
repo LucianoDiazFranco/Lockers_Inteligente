@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>LockersInteligentes.DAL</RootNamespace>
     <AssemblyName>LockersInteligentes.DAL</AssemblyName>
@@ -10,5 +10,6 @@
   <ItemGroup>
     <!-- Unico paquete de terceros: el driver de SQL Server (no es un ORM). -->
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
   </ItemGroup>
 </Project>

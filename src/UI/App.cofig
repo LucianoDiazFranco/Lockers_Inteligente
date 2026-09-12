@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+	<connectionStrings>
+		<add name="LockersDb"
+			 connectionString="Data Source=.\SQLEXPRESS;Initial Catalog=LockersInteligentes;Integrated Security=True;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" /> -->
+	</connectionStrings>
+
+	<appSettings>
+		<add key="CarpetaLogErrores" value="Logs" />
+	</appSettings>
+
+</configuration>

@@ -10,4 +10,17 @@
     <ProjectReference Include="..\Dominio\LockersInteligentes.Dominio.csproj" />
     <ProjectReference Include="..\BLL\LockersInteligentes.BLL.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="App.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>App.cofig</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App.cofig">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>App.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>

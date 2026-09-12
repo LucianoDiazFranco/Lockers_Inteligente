@@ -1,14 +1,9 @@
 using System;
 using System.Windows.Forms;
+using LockersInteligentes.BLL;
 
 namespace LockersInteligentes.UI
 {
-    /// <summary>
-    /// Punto de entrada de la aplicacion de escritorio.
-    /// Por ahora es un placeholder: existe solo para que la solucion compile
-    /// (un proyecto WinExe necesita un Main). Cuando armemos la capa UI se
-    /// reemplaza por el arranque real: FrmLogin y luego FrmPrincipal (MDI).
-    /// </summary>
     internal static class Program
     {
         [STAThread]
@@ -17,11 +12,23 @@ namespace LockersInteligentes.UI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            MessageBox.Show(
-                "Capa UI pendiente. Por el momento solo esta implementada la capa de Dominio.",
-                "Lockers Inteligentes",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            DiagnosticoService diagnostico = new DiagnosticoService();
+            string error;
+
+            if (diagnostico.ProbarConexion(out error))
+            {
+                MessageBox.Show(
+                    "Conexion a la base establecida correctamente.",
+                    "Lockers Inteligentes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "No se pudo conectar a la base de datos:" + Environment.NewLine + Environment.NewLine + error,
+                    "Lockers Inteligentes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
