@@ -8,20 +8,14 @@ namespace LockersInteligentes.Dominio.Entidades
         {
             Activo = true;
         }
-
         public string NombreUsuario { get; set; }
-
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-
+        public string Correo { get; set; }
         public string PasswordHash { get; set; }
-
         public string PasswordSalt { get; set; }
-
         public Rol Rol { get; set; }
-
         public Idioma IdiomaPreferido { get; set; }
-
         public bool Activo { get; set; }
 
         public bool EsAdministrador()

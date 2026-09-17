@@ -12,22 +12,20 @@ namespace LockersInteligentes.UI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            DiagnosticoService diagnostico = new DiagnosticoService();
-            string error;
+            // El ciclo permite cerrar sesión y volver al login sin reiniciar la app.
+            while (true)
+            {
+                using (FrmLogin login = new FrmLogin())
+                {
+                    if (login.ShowDialog() != DialogResult.OK)
+                        return;
+                }
 
-            if (diagnostico.ProbarConexion(out error))
-            {
-                MessageBox.Show(
-                    "Conexion a la base establecida correctamente.",
-                    "Lockers Inteligentes",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show(
-                    "No se pudo conectar a la base de datos:" + Environment.NewLine + Environment.NewLine + error,
-                    "Lockers Inteligentes",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FrmPrincipal principal = new FrmPrincipal();
+                Application.Run(principal);
+
+                if (!principal.CerroSesion)
+                    return;
             }
         }
     }
