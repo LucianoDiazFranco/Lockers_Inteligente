@@ -19,6 +19,7 @@ namespace LockersInteligentes.Dominio.Entidades
         public EstadoLocker Estado { get; set; }
 
         public Edificio Edificio { get; set; }
+        public string GrupoLocker { get; set; }
 
         public bool EstaDisponible()
         {

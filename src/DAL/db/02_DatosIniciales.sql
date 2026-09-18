@@ -20,3 +20,18 @@ INSERT INTO dbo.Traduccion (IdIdioma, Clave, Texto) VALUES
     (@en, N'FrmLogin.lblUsuario',     N'User'),
     (@en, N'FrmLogin.lblContrasenia', N'Password'),
     (@en, N'FrmLogin.btnIngresar',    N'Sign in');
+
+    /* --------------------- Usuario administrador inicial ---------------------
+   Usuario: admin     Contraseña: Admin1234
+------------------------------------------------------------------------- */
+
+INSERT INTO dbo.Usuario (NombreUsuario, Nombre, Apellido, Correo,
+                         PasswordHash, PasswordSalt, IdRol, IdIdioma, Activo)
+SELECT N'admin', N'Administrador', N'del Sistema', NULL,
+       'tYvMY0rrOEq6Ff+6NOOn+alFlst9mV9kVMMzOY2oy1s=',
+       'PysE4pyatRZnmJR10q+2cw==',
+       (SELECT IdRol     FROM dbo.Rol    WHERE Nombre = N'Administrador'),
+       (SELECT NumIdioma FROM dbo.Idioma WHERE EsPredeterminado = 1),
+       1
+WHERE NOT EXISTS (SELECT 1 FROM dbo.Usuario WHERE NombreUsuario = N'admin');
+GO

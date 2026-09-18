@@ -25,6 +25,7 @@ namespace LockersInteligentes.Dominio.Entidades
         public Residente ResidenteAsignado { get; set; }
         public Repartidor RepartidorAsignado { get; set; }
 
+        public const int DiasParaRetirar = 7;
 
         public IList<CodigoAcceso> Codigos { get; private set; }
 
@@ -65,6 +66,33 @@ namespace LockersInteligentes.Dominio.Entidades
         public override string ToString()
         {
             return "Orden #" + Id + " - " + Estado + " (" + TamanioPaquete + ")";
+        }
+        public bool EstaVencida()
+        {
+            if (Estado != EstadoOrden.Entregada || !FechaEntrega.HasValue)
+                return false;
+
+            return DateTime.Now > FechaEntrega.Value.AddDays(DiasParaRetirar);
+        }
+        public int? DiasRestantesParaRetiro()
+        {
+            if (Estado != EstadoOrden.Entregada || !FechaEntrega.HasValue)
+                return null;
+
+            TimeSpan restante = FechaEntrega.Value.AddDays(DiasParaRetirar) - DateTime.Now;
+            return (int)Math.Ceiling(restante.TotalDays);
+        }
+        public bool ReservaExpirada()
+        {
+            if (Estado != EstadoOrden.Reservada)
+                return false;
+
+            return DateTime.Now > FechaReserva.AddHours(CodigoAcceso.HorasDeVigencia);
+        }
+
+        public double HorasDesdeReserva()
+        {
+            return (DateTime.Now - FechaReserva).TotalHours;
         }
     }
 }

@@ -4,15 +4,9 @@ using LockersInteligentes.BLL;
 
 namespace LockersInteligentes.UI
 {
-    /// <summary>
-    /// CU.Seg.002 Registrar Operador. Se abre desde el login, sin sesion activa.
-    /// El rol no se elige: lo fija el service.
-    /// </summary>
     public partial class FrmRegistro : Form
     {
         private readonly UsuarioService _servicio = new UsuarioService();
-
-        /// <summary>Nombre de usuario recien creado, para precargarlo en el login.</summary>
         public string UsuarioCreado { get; private set; }
 
         public FrmRegistro()
@@ -67,6 +61,11 @@ namespace LockersInteligentes.UI
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void txtNombre_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

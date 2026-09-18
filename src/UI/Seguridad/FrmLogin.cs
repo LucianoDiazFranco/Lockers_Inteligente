@@ -15,8 +15,6 @@ namespace LockersInteligentes.UI
     public partial class FrmLogin : Form
     {
         private readonly LoginService _loginService = new LoginService();
-
-        /// <summary>Usuario que quedo autenticado, o null si se cancelo.</summary>
         public Usuario UsuarioAutenticado { get; private set; }
 
         public FrmLogin()
@@ -80,6 +78,11 @@ namespace LockersInteligentes.UI
                     txtContrasenia.Focus();
                 }
             }
+        }
+
+        private void lblSubtitulo_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

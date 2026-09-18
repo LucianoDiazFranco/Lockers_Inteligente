@@ -37,6 +37,10 @@ namespace LockersInteligentes.UI
         {
             AbrirHijo<FrmUsuarios>();
         }
+        private void mnuReservar_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmReservarLocker>();
+        }
         private void AbrirHijo<T>() where T : Form, new()
         {
             foreach (Form abierto in MdiChildren)

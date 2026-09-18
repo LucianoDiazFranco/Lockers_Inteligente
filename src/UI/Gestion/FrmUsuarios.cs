@@ -47,7 +47,8 @@ namespace LockersInteligentes.UI
                 {
                     u.Id,
                     Usuario = u.NombreUsuario,
-                    Nombre = u.Apellido + ", " + u.Nombre,
+                    Nombre = u.Nombre,
+                    Apellido = u.Apellido,
                     Rol = u.Rol.Nombre,
                     u.Activo
                 })
@@ -161,6 +162,11 @@ namespace LockersInteligentes.UI
         {
             lblMensaje.ForeColor = esError ? Color.Firebrick : Color.SeaGreen;
             lblMensaje.Text = mensaje;
+        }
+
+        private void dgvUsuarios_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

@@ -69,6 +69,7 @@
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new System.Drawing.Size(175, 27);
             txtNombre.TabIndex = 0;
+            txtNombre.TextChanged += txtNombre_TextChanged;
             // 
             // lblApellido
             // 
@@ -172,30 +173,35 @@
             // 
             // btnRegistrar
             // 
+            btnRegistrar.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnRegistrar.FlatAppearance.BorderSize = 2;
+            btnRegistrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRegistrar.Location = new System.Drawing.Point(30, 380);
             btnRegistrar.Name = "btnRegistrar";
             btnRegistrar.Size = new System.Drawing.Size(235, 36);
             btnRegistrar.TabIndex = 6;
             btnRegistrar.Text = "Crear cuenta";
-            btnRegistrar.UseVisualStyleBackColor = true;
+            btnRegistrar.UseVisualStyleBackColor = false;
             btnRegistrar.Click += btnRegistrar_Click;
             // 
             // btnCancelar
             // 
+            btnCancelar.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCancelar.Location = new System.Drawing.Point(275, 380);
             btnCancelar.Name = "btnCancelar";
             btnCancelar.Size = new System.Drawing.Size(115, 36);
             btnCancelar.TabIndex = 7;
             btnCancelar.Text = "Cancelar";
-            btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.UseVisualStyleBackColor = false;
             btnCancelar.Click += btnCancelar_Click;
             // 
             // FrmRegistro
             // 
             AcceptButton = btnRegistrar;
-            BackColor = System.Drawing.Color.White;
+            BackColor = System.Drawing.Color.LightSkyBlue;
             CancelButton = btnCancelar;
-            ClientSize = new System.Drawing.Size(590, 446);
+            ClientSize = new System.Drawing.Size(594, 487);
             Controls.Add(lblTitulo);
             Controls.Add(lblSubtitulo);
             Controls.Add(lblNombre);

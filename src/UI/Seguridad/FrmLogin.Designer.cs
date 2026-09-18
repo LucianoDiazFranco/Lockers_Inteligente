@@ -1,4 +1,6 @@
-﻿namespace LockersInteligentes.UI
+﻿using System;
+
+namespace LockersInteligentes.UI
 {
     partial class FrmLogin
     {
@@ -24,6 +26,7 @@
             lblMensaje = new System.Windows.Forms.Label();
             btnIngresar = new System.Windows.Forms.Button();
             btnCancelar = new System.Windows.Forms.Button();
+            lnkRegistrarse = new System.Windows.Forms.LinkLabel();
             SuspendLayout();
             // 
             // lblTitulo
@@ -32,20 +35,21 @@
             lblTitulo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             lblTitulo.Location = new System.Drawing.Point(28, 24);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new System.Drawing.Size(184, 37);
+            lblTitulo.Size = new System.Drawing.Size(307, 37);
             lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "Iniciar sesión";
+            lblTitulo.Text = "Locker Inteligentes 🔐";
             // 
             // lblSubtitulo
             // 
             lblSubtitulo.AutoSize = true;
             lblSubtitulo.Font = new System.Drawing.Font("Segoe UI", 9F);
             lblSubtitulo.ForeColor = System.Drawing.Color.Gray;
-            lblSubtitulo.Location = new System.Drawing.Point(30, 62);
+            lblSubtitulo.Location = new System.Drawing.Point(28, 70);
             lblSubtitulo.Name = "lblSubtitulo";
-            lblSubtitulo.Size = new System.Drawing.Size(310, 20);
+            lblSubtitulo.Size = new System.Drawing.Size(233, 20);
             lblSubtitulo.TabIndex = 1;
-            lblSubtitulo.Text = "Ingresá con tu usuario del sistema de gestión.";
+            lblSubtitulo.Text = "Ingresá con tu usuario del sistema";
+            lblSubtitulo.Click += lblSubtitulo_Click;
             // 
             // lblUsuario
             // 
@@ -107,41 +111,51 @@
             // 
             // btnIngresar
             // 
+            btnIngresar.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnIngresar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            btnIngresar.FlatAppearance.BorderSize = 2;
+            btnIngresar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnIngresar.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             btnIngresar.Location = new System.Drawing.Point(30, 284);
             btnIngresar.Name = "btnIngresar";
             btnIngresar.Size = new System.Drawing.Size(235, 36);
             btnIngresar.TabIndex = 3;
             btnIngresar.Text = "Ingresar";
-            btnIngresar.UseVisualStyleBackColor = true;
+            btnIngresar.UseVisualStyleBackColor = false;
             btnIngresar.Click += btnIngresar_Click;
             // 
             // btnCancelar
             // 
+            btnCancelar.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnCancelar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            btnCancelar.FlatAppearance.BorderSize = 2;
+            btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCancelar.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             btnCancelar.Location = new System.Drawing.Point(275, 284);
             btnCancelar.Name = "btnCancelar";
             btnCancelar.Size = new System.Drawing.Size(115, 36);
             btnCancelar.TabIndex = 4;
             btnCancelar.Text = "Cancelar";
-            btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.UseVisualStyleBackColor = false;
             btnCancelar.Click += btnCancelar_Click;
             // 
-            this.lnkRegistrarse = new System.Windows.Forms.LinkLabel();
-            this.lnkRegistrarse.AutoSize = true;
-            this.lnkRegistrarse.Location = new System.Drawing.Point(30, 332);
-            this.lnkRegistrarse.Name = "lnkRegistrarse";
-            this.lnkRegistrarse.TabIndex = 5;
-            this.lnkRegistrarse.TabStop = true;
-            this.lnkRegistrarse.Text = "Crear una cuenta";
-            this.lnkRegistrarse.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkRegistrarse_LinkClicked);
-            //
+            // lnkRegistrarse
+            // 
+            lnkRegistrarse.AutoSize = true;
+            lnkRegistrarse.Location = new System.Drawing.Point(30, 332);
+            lnkRegistrarse.Name = "lnkRegistrarse";
+            lnkRegistrarse.Size = new System.Drawing.Size(120, 20);
+            lnkRegistrarse.TabIndex = 5;
+            lnkRegistrarse.TabStop = true;
+            lnkRegistrarse.Text = "Crear una cuenta";
+            lnkRegistrarse.LinkClicked += lnkRegistrarse_LinkClicked;
+            // 
             // FrmLogin
             // 
             AcceptButton = btnIngresar;
-            BackColor = System.Drawing.Color.White;
+            BackColor = System.Drawing.Color.LightSkyBlue;
             CancelButton = btnCancelar;
-            ClientSize = new System.Drawing.Size(519, 371);
+            ClientSize = new System.Drawing.Size(626, 476);
             Controls.Add(lblTitulo);
             Controls.Add(lblSubtitulo);
             Controls.Add(lblUsuario);

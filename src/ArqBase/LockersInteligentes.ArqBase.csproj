@@ -4,6 +4,9 @@
     <AssemblyName>LockersInteligentes.ArqBase</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Dominio\LockersInteligentes.Dominio.csproj" />
   </ItemGroup>
 </Project>

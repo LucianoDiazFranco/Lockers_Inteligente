@@ -42,6 +42,7 @@ CREATE TABLE dbo.Usuario (
     NombreUsuario NVARCHAR(50) NOT NULL,
     Nombre        NVARCHAR(80) NOT NULL,
     Apellido      NVARCHAR(80) NOT NULL,
+    Correo        NVARCHAR(120) NULL,
     PasswordHash  VARCHAR(64)  NOT NULL, 
     PasswordSalt  VARCHAR(64)  NOT NULL,   
     IdRol         INT          NOT NULL,
