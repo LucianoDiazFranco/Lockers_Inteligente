@@ -37,7 +37,7 @@
             // 
             dgvUsuarios.AllowUserToAddRows = false;
             dgvUsuarios.AllowUserToDeleteRows = false;
-            dgvUsuarios.BackgroundColor = System.Drawing.Color.RoyalBlue;
+            dgvUsuarios.BackgroundColor = System.Drawing.Color.MidnightBlue;
             dgvUsuarios.ColumnHeadersHeight = 29;
             dgvUsuarios.Location = new System.Drawing.Point(20, 20);
             dgvUsuarios.MultiSelect = false;

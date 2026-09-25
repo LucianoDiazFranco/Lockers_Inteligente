@@ -1,7 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
-using LockersInteligentes.BLL;
+﻿using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.UI.Gestion;
+using LockersInteligentes.UI.Operacion;
+using System;
+using System.Drawing;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
@@ -16,12 +20,23 @@ namespace LockersInteligentes.UI
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
-            Usuario usuario = GestorSesion.Instancia.UsuarioActual;
+            foreach (Control control in Controls) // color del fondo 
+            {
+                MdiClient area = control as MdiClient;
+
+                if (area != null)
+                {
+                    area.BackColor = Color.RoyalBlue;
+                    break;
+                }
+            }
+                Usuario usuario = GestorSesion.Instancia.UsuarioActual;
 
             lblEstadoUsuario.Text = "Usuario: " + usuario.NombreCompleto() +
                                     "   |   Rol: " + usuario.Rol.Nombre;
 
             AplicarPermisosDeMenu();
+            AbrirHijo<FrmEstadoLockers>();
         }
 
         private void AplicarPermisosDeMenu()
@@ -71,6 +86,14 @@ namespace LockersInteligentes.UI
         {
             CerroSesion = false;
             Close();
+        }
+        private void mnuEstadoLockers_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmEstadoLockers>();
+        }
+        private void mnuEdificios_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmEdificios>();
         }
     }
 }

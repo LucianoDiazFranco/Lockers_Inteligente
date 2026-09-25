@@ -121,5 +121,17 @@ namespace LockersInteligentes.DAL.Repositorios
             comando.Parameters.AddWithValue("@Tamanio", (byte)entidad.Tamanio);
             comando.Parameters.AddWithValue("@Estado", (byte)entidad.Estado);
         }
+
+        public bool TieneOrdenes(int idLocker)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "SELECT COUNT(1) FROM dbo.OrdenDeEntrega WHERE IdLocker = @IdLocker", conexion))
+            {
+                comando.Parameters.AddWithValue("@IdLocker", idLocker);
+                conexion.Open();
+                return Convert.ToInt32(comando.ExecuteScalar()) > 0;
+            }
+        }
     }
 }

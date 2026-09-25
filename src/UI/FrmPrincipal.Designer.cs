@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
@@ -28,28 +29,30 @@ namespace LockersInteligentes.UI
             mnuResidentes = new ToolStripMenuItem();
             mnuRepartidores = new ToolStripMenuItem();
             mnuOperacion = new ToolStripMenuItem();
+            mnuEstadoLockers = new ToolStripMenuItem();
             mnuReservar = new ToolStripMenuItem();
             mnuEntrega = new ToolStripMenuItem();
             mnuRetiro = new ToolStripMenuItem();
             mnuInformacion = new ToolStripMenuItem();
             mnuReportes = new ToolStripMenuItem();
             mnuBitacora = new ToolStripMenuItem();
-            barraEstado = new StatusStrip();
-            lblEstadoUsuario = new ToolStripStatusLabel();
             mnuIdioma = new ToolStripMenuItem();
             mnuEspaniol = new ToolStripMenuItem();
             mnuIngles = new ToolStripMenuItem();
+            barraEstado = new StatusStrip();
+            lblEstadoUsuario = new ToolStripStatusLabel();
             menuPrincipal.SuspendLayout();
             barraEstado.SuspendLayout();
             SuspendLayout();
             // 
             // menuPrincipal
             // 
+            menuPrincipal.BackColor = System.Drawing.Color.LightSkyBlue;
             menuPrincipal.ImageScalingSize = new System.Drawing.Size(20, 20);
-            menuPrincipal.Items.AddRange(new ToolStripItem[] { mnuArchivo, mnuSeguridad, mnuGestion, mnuOperacion, mnuInformacion, mnuIdioma});
+            menuPrincipal.Items.AddRange(new ToolStripItem[] { mnuArchivo, mnuSeguridad, mnuGestion, mnuOperacion, mnuInformacion, mnuIdioma });
             menuPrincipal.Location = new System.Drawing.Point(0, 0);
             menuPrincipal.Name = "menuPrincipal";
-            menuPrincipal.Size = new System.Drawing.Size(900, 28);
+            menuPrincipal.Size = new System.Drawing.Size(1485, 28);
             menuPrincipal.TabIndex = 1;
             // 
             // mnuArchivo
@@ -62,14 +65,14 @@ namespace LockersInteligentes.UI
             // mnuCerrarSesion
             // 
             mnuCerrarSesion.Name = "mnuCerrarSesion";
-            mnuCerrarSesion.Size = new System.Drawing.Size(224, 26);
+            mnuCerrarSesion.Size = new System.Drawing.Size(177, 26);
             mnuCerrarSesion.Text = "Cerrar sesión";
             mnuCerrarSesion.Click += mnuCerrarSesion_Click;
             // 
             // mnuSalir
             // 
             mnuSalir.Name = "mnuSalir";
-            mnuSalir.Size = new System.Drawing.Size(224, 26);
+            mnuSalir.Size = new System.Drawing.Size(177, 26);
             mnuSalir.Text = "Salir";
             mnuSalir.Click += mnuSalir_Click;
             // 
@@ -83,7 +86,7 @@ namespace LockersInteligentes.UI
             // mnuUsuarios
             // 
             mnuUsuarios.Name = "mnuUsuarios";
-            mnuUsuarios.Size = new System.Drawing.Size(224, 26);
+            mnuUsuarios.Size = new System.Drawing.Size(148, 26);
             mnuUsuarios.Text = "Usuarios";
             mnuUsuarios.Click += mnuUsuarios_Click;
             // 
@@ -96,43 +99,49 @@ namespace LockersInteligentes.UI
             // 
             // mnuEdificios
             // 
-            mnuEdificios.Enabled = false;
             mnuEdificios.Name = "mnuEdificios";
-            mnuEdificios.Size = new System.Drawing.Size(224, 26);
             mnuEdificios.Text = "Edificios";
+            mnuEdificios.Click += mnuEdificios_Click;
             // 
             // mnuLockers
             // 
             mnuLockers.Enabled = false;
             mnuLockers.Name = "mnuLockers";
-            mnuLockers.Size = new System.Drawing.Size(224, 26);
+            mnuLockers.Size = new System.Drawing.Size(177, 26);
             mnuLockers.Text = "Lockers";
             // 
             // mnuResidentes
             // 
             mnuResidentes.Enabled = false;
             mnuResidentes.Name = "mnuResidentes";
-            mnuResidentes.Size = new System.Drawing.Size(224, 26);
+            mnuResidentes.Size = new System.Drawing.Size(177, 26);
             mnuResidentes.Text = "Residentes";
             // 
             // mnuRepartidores
             // 
             mnuRepartidores.Enabled = false;
             mnuRepartidores.Name = "mnuRepartidores";
-            mnuRepartidores.Size = new System.Drawing.Size(224, 26);
+            mnuRepartidores.Size = new System.Drawing.Size(177, 26);
             mnuRepartidores.Text = "Repartidores";
             // 
             // mnuOperacion
             // 
-            mnuOperacion.DropDownItems.AddRange(new ToolStripItem[] { mnuReservar, mnuEntrega, mnuRetiro });
+            mnuOperacion.DropDownItems.AddRange(new ToolStripItem[] { mnuEstadoLockers, mnuReservar, mnuEntrega, mnuRetiro });
             mnuOperacion.Name = "mnuOperacion";
             mnuOperacion.Size = new System.Drawing.Size(92, 24);
             mnuOperacion.Text = "&Operación";
             // 
+            // mnuEstadoLockers
+            // 
+            mnuEstadoLockers.Name = "mnuEstadoLockers";
+            mnuEstadoLockers.Size = new System.Drawing.Size(208, 26);
+            mnuEstadoLockers.Text = "Estado de lockers";
+            mnuEstadoLockers.Click += mnuEstadoLockers_Click;
+            // 
             // mnuReservar
             // 
             mnuReservar.Name = "mnuReservar";
-            mnuReservar.Size = new System.Drawing.Size(224, 26);
+            mnuReservar.Size = new System.Drawing.Size(208, 26);
             mnuReservar.Text = "Reservar locker";
             mnuReservar.Click += mnuReservar_Click;
             // 
@@ -140,14 +149,14 @@ namespace LockersInteligentes.UI
             // 
             mnuEntrega.Enabled = false;
             mnuEntrega.Name = "mnuEntrega";
-            mnuEntrega.Size = new System.Drawing.Size(224, 26);
+            mnuEntrega.Size = new System.Drawing.Size(208, 26);
             mnuEntrega.Text = "Registrar entrega";
             // 
             // mnuRetiro
             // 
             mnuRetiro.Enabled = false;
             mnuRetiro.Name = "mnuRetiro";
-            mnuRetiro.Size = new System.Drawing.Size(224, 26);
+            mnuRetiro.Size = new System.Drawing.Size(208, 26);
             mnuRetiro.Text = "Registrar retiro";
             // 
             // mnuInformacion
@@ -161,35 +170,21 @@ namespace LockersInteligentes.UI
             // 
             mnuReportes.Enabled = false;
             mnuReportes.Name = "mnuReportes";
-            mnuReportes.Size = new System.Drawing.Size(224, 26);
+            mnuReportes.Size = new System.Drawing.Size(151, 26);
             mnuReportes.Text = "Reportes";
             // 
             // mnuBitacora
             // 
             mnuBitacora.Enabled = false;
             mnuBitacora.Name = "mnuBitacora";
-            mnuBitacora.Size = new System.Drawing.Size(224, 26);
+            mnuBitacora.Size = new System.Drawing.Size(151, 26);
             mnuBitacora.Text = "Bitácora";
-            // 
-            // barraEstado
-            // 
-            barraEstado.ImageScalingSize = new System.Drawing.Size(20, 20);
-            barraEstado.Items.AddRange(new ToolStripItem[] { lblEstadoUsuario });
-            barraEstado.Location = new System.Drawing.Point(0, 528);
-            barraEstado.Name = "barraEstado";
-            barraEstado.Size = new System.Drawing.Size(900, 22);
-            barraEstado.TabIndex = 0;
-            // 
-            // lblEstadoUsuario
-            // 
-            lblEstadoUsuario.Name = "lblEstadoUsuario";
-            lblEstadoUsuario.Size = new System.Drawing.Size(0, 16);
             // 
             // mnuIdioma
             // 
             mnuIdioma.DropDownItems.AddRange(new ToolStripItem[] { mnuEspaniol, mnuIngles });
             mnuIdioma.Name = "mnuIdioma";
-            mnuIdioma.Size = new System.Drawing.Size(32, 19);
+            mnuIdioma.Size = new System.Drawing.Size(70, 24);
             mnuIdioma.Text = "&Idioma";
             // 
             // mnuEspaniol
@@ -204,9 +199,24 @@ namespace LockersInteligentes.UI
             mnuIngles.Size = new System.Drawing.Size(144, 26);
             mnuIngles.Text = "English";
             // 
+            // barraEstado
+            // 
+            barraEstado.ImageScalingSize = new System.Drawing.Size(20, 20);
+            barraEstado.Items.AddRange(new ToolStripItem[] { lblEstadoUsuario });
+            barraEstado.Location = new System.Drawing.Point(0, 625);
+            barraEstado.Name = "barraEstado";
+            barraEstado.Size = new System.Drawing.Size(1485, 22);
+            barraEstado.TabIndex = 0;
+            // 
+            // lblEstadoUsuario
+            // 
+            lblEstadoUsuario.Name = "lblEstadoUsuario";
+            lblEstadoUsuario.Size = new System.Drawing.Size(0, 16);
+            // 
             // FrmPrincipal
             // 
-            ClientSize = new System.Drawing.Size(900, 550);
+            BackColor = System.Drawing.SystemColors.Control;
+            ClientSize = new System.Drawing.Size(1485, 647);
             Controls.Add(barraEstado);
             Controls.Add(menuPrincipal);
             Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -236,6 +246,7 @@ namespace LockersInteligentes.UI
         private System.Windows.Forms.ToolStripMenuItem mnuResidentes;
         private System.Windows.Forms.ToolStripMenuItem mnuRepartidores;
         private System.Windows.Forms.ToolStripMenuItem mnuOperacion;
+        private System.Windows.Forms.ToolStripMenuItem mnuEstadoLockers;
         private System.Windows.Forms.ToolStripMenuItem mnuReservar;
         private System.Windows.Forms.ToolStripMenuItem mnuEntrega;
         private System.Windows.Forms.ToolStripMenuItem mnuRetiro;
