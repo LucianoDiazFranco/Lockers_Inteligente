@@ -8,7 +8,6 @@
 ![C#](https://img.shields.io/badge/C%23-latest-239120?logo=csharp&logoColor=white)
 ![WinForms](https://img.shields.io/badge/UI-Windows%20Forms-0078D6?logo=windows&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/DB-SQL%20Server-CC2927?logo=microsoftsqlserver&logoColor=white)
-![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
 
 <img src="docs/locker-animado.svg" alt="Animación: un repartidor ingresa el PIN, el locker se abre, deja el paquete y queda Ocupado" width="640"/>
 
