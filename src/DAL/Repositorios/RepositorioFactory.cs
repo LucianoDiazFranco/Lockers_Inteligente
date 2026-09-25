@@ -10,6 +10,7 @@
         private RepositorioResidente _residentes;
         private RepositorioOrdenDeEntrega _ordenes;
         private RepositorioCodigoAcceso _codigos;
+        private RepositorioRepartidor _repartidores;
         private RepositorioFactory()
         {}
         public static RepositorioFactory Instancia
@@ -87,6 +88,16 @@
                     _codigos = new RepositorioCodigoAcceso();
 
                 return _codigos;
+            }
+        }
+        public RepositorioRepartidor Repartidores
+        {
+            get
+            {
+                if (_repartidores == null)
+                    _repartidores = new RepositorioRepartidor();
+
+                return _repartidores;
             }
         }
     }

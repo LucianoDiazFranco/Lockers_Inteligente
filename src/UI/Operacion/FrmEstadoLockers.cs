@@ -252,6 +252,10 @@ namespace LockersInteligentes.UI.Operacion
                               "Rojo: ocupado, esperando retiro    Ámbar: vencido (más de " +
                               OrdenDeEntrega.DiasParaRetirar + " días)    Gris: fuera de servicio";
         }
+        public void Refrescar()
+        {
+            Recargar();
+        }
     }
 }
 

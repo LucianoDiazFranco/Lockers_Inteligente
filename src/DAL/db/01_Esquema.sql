@@ -91,6 +91,7 @@ CREATE TABLE dbo.Residente (
     Correo      NVARCHAR(120) NOT NULL, 
     Piso        NVARCHAR(10)  NULL,
     Telefono    NVARCHAR(30)  NULL,
+    Activo      BIT           NOT NULL CONSTRAINT DF_Residente_Activo DEFAULT (1),
     CONSTRAINT PK_Residente          PRIMARY KEY (IdResidente),
     CONSTRAINT UQ_Residente_Dni      UNIQUE (Dni),
     CONSTRAINT FK_Residente_Edificio FOREIGN KEY (IdEdificio)
@@ -104,6 +105,7 @@ CREATE TABLE dbo.Repartidor (
     Dni          NVARCHAR(15) NOT NULL,
     Empresa      NVARCHAR(80) NULL,
     Telefono     NVARCHAR(30) NULL,
+    Activo       BIT          NOT NULL CONSTRAINT DF_Repartidor_Activo DEFAULT (1),
     CONSTRAINT PK_Repartidor     PRIMARY KEY (IdRepartidor),
     CONSTRAINT UQ_Repartidor_Dni UNIQUE (Dni)
 );

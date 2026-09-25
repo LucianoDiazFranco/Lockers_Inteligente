@@ -105,24 +105,21 @@ namespace LockersInteligentes.UI
             // 
             // mnuLockers
             // 
-            mnuLockers.Enabled = false;
             mnuLockers.Name = "mnuLockers";
-            mnuLockers.Size = new System.Drawing.Size(177, 26);
             mnuLockers.Text = "Lockers";
+            mnuLockers.Click += mnuLockers_Click;
             // 
             // mnuResidentes
             // 
-            mnuResidentes.Enabled = false;
             mnuResidentes.Name = "mnuResidentes";
-            mnuResidentes.Size = new System.Drawing.Size(177, 26);
             mnuResidentes.Text = "Residentes";
+            mnuResidentes.Click += mnuResidentes_Click;
             // 
             // mnuRepartidores
             // 
-            mnuRepartidores.Enabled = false;
             mnuRepartidores.Name = "mnuRepartidores";
-            mnuRepartidores.Size = new System.Drawing.Size(177, 26);
             mnuRepartidores.Text = "Repartidores";
+            mnuRepartidores.Click += mnuRepartidores_Click;
             // 
             // mnuOperacion
             // 

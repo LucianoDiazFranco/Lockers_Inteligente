@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using LockersInteligentes.ArqBase.Servicios;
+﻿using LockersInteligentes.ArqBase.Servicios;
 using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LockersInteligentes.BLL
 {
@@ -82,7 +83,11 @@ namespace LockersInteligentes.BLL
         public IList<Residente> ListarResidentes()
         {
             ValidarSesion();
-            return RepositorioFactory.Instancia.Residentes.ObtenerTodos();
+
+            return RepositorioFactory.Instancia.Residentes
+                .ObtenerTodos()
+                .Where(r => r.Activo)
+                .ToList();
         }
 
         public IList<OrdenDeEntrega> ListarPorEstado(EstadoOrden estado)

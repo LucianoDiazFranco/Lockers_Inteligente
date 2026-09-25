@@ -171,5 +171,17 @@ namespace LockersInteligentes.DAL.Repositorios
 
             return mapa;
         }
+        public int ContarActivasPorResidente(int idResidente)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "SELECT COUNT(1) FROM dbo.OrdenDeEntrega " +
+                "WHERE IdResidente = @IdResidente AND Estado IN (1, 2)", conexion))
+            {
+                comando.Parameters.AddWithValue("@IdResidente", idResidente);
+                conexion.Open();
+                return Convert.ToInt32(comando.ExecuteScalar());
+            }
+        }
     }
 }

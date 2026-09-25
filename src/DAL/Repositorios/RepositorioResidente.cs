@@ -16,7 +16,7 @@ namespace LockersInteligentes.DAL.Repositorios
             get
             {
                 return "SELECT r.IdResidente, r.Nombre, r.Apellido, r.Dni, r.Correo, " +
-                       "       r.Piso, r.Telefono, " +
+                       "       r.Piso, r.Telefono, r.Activo, " +
                        "       e.IdEdificio, e.Nombre AS EdificioNombre, e.Direccion, " +
                        "       e.Localidad, e.CantLockers " +
                        "FROM dbo.Residente r " +
@@ -28,8 +28,8 @@ namespace LockersInteligentes.DAL.Repositorios
         {
             get
             {
-                return "INSERT INTO dbo.Residente (IdEdificio, Nombre, Apellido, Dni, Correo, Piso, Telefono) " +
-                       "VALUES (@IdEdificio, @Nombre, @Apellido, @Dni, @Correo, @Piso, @Telefono)";
+                return "INSERT INTO dbo.Residente (IdEdificio, Nombre, Apellido, Dni, Correo, Piso, Telefono, Activo) " +
+                       "VALUES (@IdEdificio, @Nombre, @Apellido, @Dni, @Correo, @Piso, @Telefono, @Activo)";
             }
         }
 
@@ -39,7 +39,7 @@ namespace LockersInteligentes.DAL.Repositorios
             {
                 return "UPDATE dbo.Residente SET IdEdificio = @IdEdificio, Nombre = @Nombre, " +
                        "       Apellido = @Apellido, Dni = @Dni, Correo = @Correo, " +
-                       "       Piso = @Piso, Telefono = @Telefono " +
+                       "       Piso = @Piso, Telefono = @Telefono, Activo = @Activo " +
                        "WHERE IdResidente = @Id";
             }
         }
@@ -75,6 +75,7 @@ namespace LockersInteligentes.DAL.Repositorios
             residente.Correo = lector["Correo"].ToString();
             residente.Piso = lector["Piso"] == DBNull.Value ? null : lector["Piso"].ToString();
             residente.Telefono = lector["Telefono"] == DBNull.Value ? null : lector["Telefono"].ToString();
+            residente.Activo = Convert.ToBoolean(lector["Activo"]);
 
             residente.Edificio = new Edificio();
             residente.Edificio.Id = Convert.ToInt32(lector["IdEdificio"]);
@@ -94,9 +95,35 @@ namespace LockersInteligentes.DAL.Repositorios
             comando.Parameters.AddWithValue("@Dni", entidad.Dni);
             comando.Parameters.AddWithValue("@Correo", entidad.Correo);
             comando.Parameters.AddWithValue("@Piso",
-                entidad.Piso != null ? (object)entidad.Piso : DBNull.Value);
+            entidad.Piso != null ? (object)entidad.Piso : DBNull.Value);
             comando.Parameters.AddWithValue("@Telefono",
-                entidad.Telefono != null ? (object)entidad.Telefono : DBNull.Value);
+            entidad.Telefono != null ? (object)entidad.Telefono : DBNull.Value);
+            comando.Parameters.AddWithValue("@Activo", entidad.Activo);
+        }
+        public override void Eliminar(int id)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "UPDATE dbo.Residente SET Activo = 0 WHERE IdResidente = @Id", conexion))
+            {
+                comando.Parameters.AddWithValue("@Id", id);
+                conexion.Open();
+                comando.ExecuteNonQuery();
+            }
+        }
+
+        public bool ExisteDni(string dni, int idExcluido)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "SELECT COUNT(1) FROM dbo.Residente WHERE Dni = @Dni AND IdResidente <> @IdExcluido",
+                conexion))
+            {
+                comando.Parameters.AddWithValue("@Dni", dni);
+                comando.Parameters.AddWithValue("@IdExcluido", idExcluido);
+                conexion.Open();
+                return Convert.ToInt32(comando.ExecuteScalar()) > 0;
+            }
         }
     }
 }

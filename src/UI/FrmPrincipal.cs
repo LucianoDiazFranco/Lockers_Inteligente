@@ -63,6 +63,12 @@ namespace LockersInteligentes.UI
                 if (abierto is T)
                 {
                     abierto.Activate();
+
+                    FrmEstadoLockers panel = abierto as FrmEstadoLockers;
+
+                    if (panel != null)
+                        panel.Refrescar();
+
                     return;
                 }
             }
@@ -94,6 +100,18 @@ namespace LockersInteligentes.UI
         private void mnuEdificios_Click(object sender, EventArgs e)
         {
             AbrirHijo<FrmEdificios>();
+        }
+        private void mnuLockers_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmLockers>();
+        }
+        private void mnuRepartidores_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmRepartidores>();
+        }
+        private void mnuResidentes_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmResidentes>();
         }
     }
 }

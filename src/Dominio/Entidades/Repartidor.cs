@@ -8,6 +8,8 @@ namespace LockersInteligentes.Dominio.Entidades
         public string Empresa { get; set; }
         public string Telefono { get; set; }
 
+        public bool Activo { get; set; }
+
         public string NombreCompleto()
         {
             return Apellido + ", " + Nombre;
@@ -16,6 +18,10 @@ namespace LockersInteligentes.Dominio.Entidades
         public override string ToString()
         {
             return NombreCompleto() + " - " + Empresa;
+        }
+        public Repartidor()
+        {
+            Activo = true;
         }
     }
 }

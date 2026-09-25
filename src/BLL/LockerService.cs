@@ -104,8 +104,66 @@ namespace LockersInteligentes.BLL
             locker.Estado = EstadoLocker.Libre;   // un locker nuevo siempre nace libre
 
             RepositorioFactory.Instancia.Lockers.Insertar(locker);
+            new EdificioService().SincronizarCantidad(idEdificio);
             return locker;
         }
+        public int GenerarTanda(int idEdificio, int cantidad, int numeroInicial,
+                                string sector, TamanioPaquete tamanio)
+        {
+            GestorSesion.Instancia.ValidarRolAdministrador();
+
+            if (cantidad <= 0)
+                throw new InvalidOperationException("La cantidad debe ser mayor a cero.");
+
+            if (cantidad > 200)
+                throw new InvalidOperationException("No se pueden generar más de 200 lockers por vez.");
+
+            if (numeroInicial <= 0)
+                throw new InvalidOperationException("El número inicial debe ser mayor a cero.");
+
+            Edificio edificio = RepositorioFactory.Instancia.Edificios.ObtenerPorId(idEdificio);
+
+            if (edificio == null)
+                throw new InvalidOperationException("El edificio seleccionado no existe.");
+
+            List<int> existentes = RepositorioFactory.Instancia.Lockers
+                                    .ObtenerPorEdificio(idEdificio)
+                                    .Select(l => l.Numero)
+                                    .ToList();
+
+            List<int> chocan = new List<int>();
+
+            for (int i = 0; i < cantidad; i++)
+            {
+                int numero = numeroInicial + i;
+
+                if (existentes.Contains(numero))
+                    chocan.Add(numero);
+            }
+
+            if (chocan.Count > 0)
+                throw new InvalidOperationException(
+                    "Ya existen lockers con estos números en el edificio: " +
+                    string.Join(", ", chocan.Take(10)) +
+                    (chocan.Count > 10 ? " y " + (chocan.Count - 10) + " más." : "."));
+
+            for (int i = 0; i < cantidad; i++)
+            {
+                Locker locker = new Locker();
+                locker.Edificio = edificio;
+                locker.Numero = numeroInicial + i;
+                locker.GrupoLocker = string.IsNullOrWhiteSpace(sector) ? null : sector.Trim();
+                locker.Descripcion = null;
+                locker.Tamanio = tamanio;
+                locker.Estado = EstadoLocker.Libre;
+
+                RepositorioFactory.Instancia.Lockers.Insertar(locker);
+            }
+
+            new EdificioService().SincronizarCantidad(idEdificio);
+            return cantidad;
+        }
+
 
         /// <summary>
         /// Modifica los datos del locker. El tamaño NO se puede cambiar si el locker
@@ -179,7 +237,9 @@ namespace LockersInteligentes.BLL
                     "No se puede eliminar: el locker tiene órdenes registradas en el historial. " +
                     "Ponelo Fuera de servicio en lugar de eliminarlo.");
 
+            int idEdificio = locker.Edificio.Id;
             RepositorioFactory.Instancia.Lockers.Eliminar(idLocker);
+            new EdificioService().SincronizarCantidad(idEdificio);
         }
 
         private bool ExisteNumero(int idEdificio, int numero, int idExcluido)

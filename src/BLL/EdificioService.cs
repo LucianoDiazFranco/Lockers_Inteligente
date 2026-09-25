@@ -13,14 +13,34 @@ namespace LockersInteligentes.BLL
         public IList<Edificio> Listar()
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
-            return RepositorioFactory.Instancia.Edificios.ObtenerTodos();
+
+            IList<Edificio> edificios = RepositorioFactory.Instancia.Edificios.ObtenerTodos();
+            IDictionary<int, int> conteo = RepositorioFactory.Instancia.Lockers.ContarPorEdificio();
+
+            foreach (Edificio edificio in edificios)
+            {
+                int cantidad;
+                edificio.CantLockers = conteo.TryGetValue(edificio.Id, out cantidad) ? cantidad : 0;
+            }
+
+            return edificios;
+        }
+        public void SincronizarCantidad(int idEdificio)
+        {
+            Edificio edificio = RepositorioFactory.Instancia.Edificios.ObtenerPorId(idEdificio);
+
+            if (edificio == null)
+                return;
+
+            edificio.CantLockers = RepositorioFactory.Instancia.Lockers.ContarPorEdificio(idEdificio);
+            RepositorioFactory.Instancia.Edificios.Actualizar(edificio);
         }
 
         public Edificio Crear(string nombre, string direccion, string localidad,
-                              string telefono, int cantLockers)
+                              string telefono)
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
-            Validar(nombre, direccion, localidad, cantLockers);
+            Validar(nombre, direccion, localidad, 0);
 
             if (ExisteNombre(nombre, 0))
                 throw new InvalidOperationException(
@@ -31,7 +51,7 @@ namespace LockersInteligentes.BLL
             edificio.Direccion = direccion.Trim();
             edificio.Localidad = localidad.Trim();
             edificio.TelefonoContacto = string.IsNullOrWhiteSpace(telefono) ? null : telefono.Trim();
-            edificio.CantLockers = cantLockers;
+            edificio.CantLockers = 0; // un edificio nuevo arranca sin lockers
 
             RepositorioFactory.Instancia.Edificios.Insertar(edificio);
             return edificio;

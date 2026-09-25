@@ -10,6 +10,8 @@ namespace LockersInteligentes.Dominio.Entidades
         public string Piso { get; set; }
         public string Telefono { get; set; }
 
+        public bool Activo { get; set; }
+
         public Edificio Edificio { get; set; }
 
         public string NombreCompleto()
@@ -20,6 +22,10 @@ namespace LockersInteligentes.Dominio.Entidades
         public override string ToString()
         {
             return NombreCompleto() + " (Piso " + Piso + ")";
+        }
+        public Residente()
+        {
+            Activo = true;
         }
     }
 }

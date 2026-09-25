@@ -133,5 +133,38 @@ namespace LockersInteligentes.DAL.Repositorios
                 return Convert.ToInt32(comando.ExecuteScalar()) > 0;
             }
         }
+        public IDictionary<int, int> ContarPorEdificio()
+        {
+            Dictionary<int, int> conteo = new Dictionary<int, int>();
+
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "SELECT IdEdificio, COUNT(1) AS Cantidad " +
+                "FROM dbo.Locker GROUP BY IdEdificio", conexion))
+            {
+                conexion.Open();
+
+                using (SqlDataReader lector = comando.ExecuteReader())
+                {
+                    while (lector.Read())
+                        conteo[Convert.ToInt32(lector["IdEdificio"])] = Convert.ToInt32(lector["Cantidad"]);
+                }
+            }
+
+            return conteo;
+        }
+
+        /// <summary>Cantidad de lockers de un edificio puntual.</summary>
+        public int ContarPorEdificio(int idEdificio)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                "SELECT COUNT(1) FROM dbo.Locker WHERE IdEdificio = @IdEdificio", conexion))
+            {
+                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                conexion.Open();
+                return Convert.ToInt32(comando.ExecuteScalar());
+            }
+        }
     }
 }
