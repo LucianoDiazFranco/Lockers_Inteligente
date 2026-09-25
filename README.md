@@ -133,7 +133,3 @@ Lockers_Inteligente/
 ## 👥 Autores
 
 - **Luciano Díaz Franco** – [@LucianoDiazFranco](https://github.com/LucianoDiazFranco)
-
-<div align="center">
-<sub>Hecho con ☕ y C#</sub>
-</div>
