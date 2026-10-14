@@ -1,4 +1,7 @@
-﻿namespace LockersInteligentes.UI.Gestion
+﻿using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace LockersInteligentes.UI
 {
     partial class FrmRepartidores
     {
@@ -7,30 +10,29 @@
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
+
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
-            dgvRepartidores = new System.Windows.Forms.DataGridView();
-            lblNombre = new System.Windows.Forms.Label();
-            txtNombre = new System.Windows.Forms.TextBox();
-            lblApellido = new System.Windows.Forms.Label();
-            txtApellido = new System.Windows.Forms.TextBox();
-            lblDni = new System.Windows.Forms.Label();
-            txtDni = new System.Windows.Forms.TextBox();
-            lblEmpresa = new System.Windows.Forms.Label();
-            txtEmpresa = new System.Windows.Forms.TextBox();
-            lblTelefono = new System.Windows.Forms.Label();
-            txtTelefono = new System.Windows.Forms.TextBox();
-            btnNuevo = new System.Windows.Forms.Button();
-            btnGuardar = new System.Windows.Forms.Button();
-            btnDesactivar = new System.Windows.Forms.Button();
-            btnReactivar = new System.Windows.Forms.Button();
-            lblMensaje = new System.Windows.Forms.Label();
+            dgvRepartidores = new DataGridView();
+            lblNombre = new Label();
+            txtNombre = new TextBox();
+            lblApellido = new Label();
+            txtApellido = new TextBox();
+            lblDni = new Label();
+            txtDni = new TextBox();
+            lblEmpresa = new Label();
+            txtEmpresa = new TextBox();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
+            btnNuevo = new Button();
+            btnGuardar = new Button();
+            btnDesactivar = new Button();
+            btnReactivar = new Button();
+            lblMensaje = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvRepartidores).BeginInit();
             SuspendLayout();
             // 
@@ -46,7 +48,7 @@
             dgvRepartidores.ReadOnly = true;
             dgvRepartidores.RowHeadersVisible = false;
             dgvRepartidores.RowHeadersWidth = 51;
-            dgvRepartidores.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvRepartidores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvRepartidores.Size = new System.Drawing.Size(700, 230);
             dgvRepartidores.TabIndex = 0;
             dgvRepartidores.SelectionChanged += dgvRepartidores_SelectionChanged;
@@ -135,7 +137,7 @@
             // 
             btnNuevo.BackColor = System.Drawing.Color.CornflowerBlue;
             btnNuevo.FlatAppearance.BorderSize = 2;
-            btnNuevo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNuevo.FlatStyle = FlatStyle.Flat;
             btnNuevo.Location = new System.Drawing.Point(620, 284);
             btnNuevo.Name = "btnNuevo";
             btnNuevo.Size = new System.Drawing.Size(100, 30);
@@ -148,7 +150,7 @@
             // 
             btnGuardar.BackColor = System.Drawing.Color.CornflowerBlue;
             btnGuardar.FlatAppearance.BorderSize = 2;
-            btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGuardar.FlatStyle = FlatStyle.Flat;
             btnGuardar.Location = new System.Drawing.Point(620, 320);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new System.Drawing.Size(100, 30);
@@ -161,10 +163,10 @@
             // 
             btnDesactivar.BackColor = System.Drawing.Color.CornflowerBlue;
             btnDesactivar.FlatAppearance.BorderSize = 2;
-            btnDesactivar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnDesactivar.Location = new System.Drawing.Point(460, 344);
+            btnDesactivar.FlatStyle = FlatStyle.Flat;
+            btnDesactivar.Location = new System.Drawing.Point(460, 348);
             btnDesactivar.Name = "btnDesactivar";
-            btnDesactivar.Size = new System.Drawing.Size(140, 30);
+            btnDesactivar.Size = new System.Drawing.Size(154, 38);
             btnDesactivar.TabIndex = 8;
             btnDesactivar.Text = "Dar de baja";
             btnDesactivar.UseVisualStyleBackColor = false;
@@ -174,10 +176,10 @@
             // 
             btnReactivar.BackColor = System.Drawing.Color.CornflowerBlue;
             btnReactivar.FlatAppearance.BorderSize = 2;
-            btnReactivar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnReactivar.Location = new System.Drawing.Point(460, 380);
+            btnReactivar.FlatStyle = FlatStyle.Flat;
+            btnReactivar.Location = new System.Drawing.Point(460, 396);
             btnReactivar.Name = "btnReactivar";
-            btnReactivar.Size = new System.Drawing.Size(140, 32);
+            btnReactivar.Size = new System.Drawing.Size(154, 40);
             btnReactivar.TabIndex = 9;
             btnReactivar.Text = "Reactivar";
             btnReactivar.UseVisualStyleBackColor = false;
@@ -193,7 +195,7 @@
             // FrmRepartidores
             // 
             BackColor = System.Drawing.Color.LightSkyBlue;
-            ClientSize = new System.Drawing.Size(800, 457);
+            ClientSize = new System.Drawing.Size(744, 450);
             Controls.Add(dgvRepartidores);
             Controls.Add(lblNombre);
             Controls.Add(txtNombre);
@@ -212,7 +214,7 @@
             Controls.Add(lblMensaje);
             Font = new System.Drawing.Font("Segoe UI", 9F);
             Name = "FrmRepartidores";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Gestión de repartidores";
             Load += FrmRepartidores_Load;
             ((System.ComponentModel.ISupportInitialize)dgvRepartidores).EndInit();

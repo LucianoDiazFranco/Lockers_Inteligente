@@ -1,26 +1,25 @@
-﻿using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using LockersInteligentes.BLL;
+using LockersInteligentes.Dominio.Entidades;
 
-namespace LockersInteligentes.UI.Gestion
+namespace LockersInteligentes.UI
 {
+    
     public partial class FrmRepartidores : Form
     {
         private readonly RepartidorService _servicio = new RepartidorService();
         private IList<Repartidor> _repartidores = new List<Repartidor>();
         private int _idSeleccionado;
+
         public FrmRepartidores()
         {
             InitializeComponent();
         }
+
         private void FrmRepartidores_Load(object sender, EventArgs e)
         {
             CargarGrilla();

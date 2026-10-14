@@ -1,4 +1,4 @@
-﻿namespace LockersInteligentes.UI.Operacion
+﻿namespace LockersInteligentes.UI
 {
     partial class FrmEstadoLockers
     {
@@ -7,9 +7,8 @@
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
+
             base.Dispose(disposing);
         }
 
@@ -42,7 +41,7 @@
             panelSuperior.Dock = System.Windows.Forms.DockStyle.Top;
             panelSuperior.Location = new System.Drawing.Point(0, 0);
             panelSuperior.Name = "panelSuperior";
-            panelSuperior.Size = new System.Drawing.Size(1291, 78);
+            panelSuperior.Size = new System.Drawing.Size(920, 78);
             panelSuperior.TabIndex = 0;
             // 
             // lblEdificio
@@ -56,9 +55,7 @@
             // 
             // cboEdificio
             // 
-            cboEdificio.BackColor = System.Drawing.Color.AliceBlue;
             cboEdificio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cboEdificio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             cboEdificio.Location = new System.Drawing.Point(72, 12);
             cboEdificio.Name = "cboEdificio";
             cboEdificio.Size = new System.Drawing.Size(260, 28);
@@ -76,9 +73,7 @@
             // 
             // cboSector
             // 
-            cboSector.BackColor = System.Drawing.Color.AliceBlue;
             cboSector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cboSector.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             cboSector.Location = new System.Drawing.Point(402, 12);
             cboSector.Name = "cboSector";
             cboSector.Size = new System.Drawing.Size(180, 28);
@@ -88,6 +83,7 @@
             // btnActualizar
             // 
             btnActualizar.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnActualizar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             btnActualizar.FlatAppearance.BorderSize = 2;
             btnActualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnActualizar.Location = new System.Drawing.Point(600, 11);
@@ -110,12 +106,12 @@
             // panelLockers
             // 
             panelLockers.AutoScroll = true;
-            panelLockers.BackColor = System.Drawing.Color.MidnightBlue;
+            panelLockers.BackColor = System.Drawing.Color.Navy;
             panelLockers.Dock = System.Windows.Forms.DockStyle.Fill;
             panelLockers.Location = new System.Drawing.Point(0, 78);
             panelLockers.Name = "panelLockers";
             panelLockers.Padding = new System.Windows.Forms.Padding(14);
-            panelLockers.Size = new System.Drawing.Size(1291, 489);
+            panelLockers.Size = new System.Drawing.Size(920, 466);
             panelLockers.TabIndex = 1;
             // 
             // panelInferior
@@ -124,9 +120,9 @@
             panelInferior.Controls.Add(lblLeyenda);
             panelInferior.Controls.Add(lblDetalle);
             panelInferior.Dock = System.Windows.Forms.DockStyle.Bottom;
-            panelInferior.Location = new System.Drawing.Point(0, 567);
+            panelInferior.Location = new System.Drawing.Point(0, 544);
             panelInferior.Name = "panelInferior";
-            panelInferior.Size = new System.Drawing.Size(1291, 76);
+            panelInferior.Size = new System.Drawing.Size(920, 76);
             panelInferior.TabIndex = 2;
             // 
             // lblLeyenda
@@ -147,7 +143,7 @@
             // 
             // FrmEstadoLockers
             // 
-            ClientSize = new System.Drawing.Size(1291, 643);
+            ClientSize = new System.Drawing.Size(920, 620);
             Controls.Add(panelLockers);
             Controls.Add(panelInferior);
             Controls.Add(panelSuperior);

@@ -1,18 +1,19 @@
-﻿using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using LockersInteligentes.BLL;
+using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
 
-namespace LockersInteligentes.UI.Operacion
+namespace LockersInteligentes.UI
 {
+    /// <summary>
+    /// Panel operativo con el estado de los lockers de un edificio.
+    /// Los controles fijos están en el Designer; los casilleros se crean por código
+    /// porque su cantidad depende de cuántos lockers tenga el edificio.
+    /// </summary>
     public partial class FrmEstadoLockers : Form
     {
         private static readonly Color ColorLibre = Color.FromArgb(46, 160, 67);
@@ -28,6 +29,7 @@ namespace LockersInteligentes.UI.Operacion
         {
             InitializeComponent();
         }
+
         private void FrmEstadoLockers_Load(object sender, EventArgs e)
         {
             try
@@ -104,8 +106,8 @@ namespace LockersInteligentes.UI.Operacion
                 (r.Vencidos > 0 ? "   |   " + r.Vencidos + " vencidos" : "");
         }
 
-
-        private void Dibujar()     /// <summary> Redibuja los casilleros sin volver a consultar la base.</summary>
+        /// <summary>Redibuja los casilleros sin volver a consultar la base.</summary>
+        private void Dibujar()
         {
             panelLockers.SuspendLayout();
             panelLockers.Controls.Clear();
@@ -252,10 +254,5 @@ namespace LockersInteligentes.UI.Operacion
                               "Rojo: ocupado, esperando retiro    Ámbar: vencido (más de " +
                               OrdenDeEntrega.DiasParaRetirar + " días)    Gris: fuera de servicio";
         }
-        public void Refrescar()
-        {
-            Recargar();
-        }
     }
 }
-
