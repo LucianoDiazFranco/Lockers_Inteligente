@@ -11,6 +11,8 @@
         private RepositorioOrdenDeEntrega _ordenes;
         private RepositorioCodigoAcceso _codigos;
         private RepositorioRepartidor _repartidores;
+        private RepositorioHistorial _historial;
+        private RepositorioReporte _reportes;
         private RepositorioFactory()
         {}
         public static RepositorioFactory Instancia
@@ -100,5 +102,26 @@
                 return _repartidores;
             }
         }
+        public RepositorioHistorial Historial
+        {
+            get
+            {
+                if (_historial == null)
+                    _historial = new RepositorioHistorial();
+
+                return _historial;
+            }
+        }
+        public RepositorioReporte Reportes
+        {
+            get
+            {
+                if (_reportes == null)
+                    _reportes = new RepositorioReporte();
+
+                return _reportes;
+            }
+        }
+
     }
 }

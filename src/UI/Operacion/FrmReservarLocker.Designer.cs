@@ -164,7 +164,7 @@ namespace LockersInteligentes.UI
             // 
             // lblAvisoPin
             // 
-            lblAvisoPin.ForeColor = System.Drawing.Color.Gray;
+            lblAvisoPin.ForeColor = System.Drawing.Color.White;
             lblAvisoPin.Location = new System.Drawing.Point(16, 216);
             lblAvisoPin.Name = "lblAvisoPin";
             lblAvisoPin.Size = new System.Drawing.Size(308, 60);

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using LockersInteligentes.ArqBase.Servicios;
+﻿using LockersInteligentes.ArqBase.Servicios;
 using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace LockersInteligentes.BLL
 {
     public class UsuarioService
     {
+        private readonly HistorialService _historial = new HistorialService();
         private const int LongitudMinimaPassword = 8;
         public IList<Usuario> Listar()
         {
@@ -40,6 +42,11 @@ namespace LockersInteligentes.BLL
             AsignarPassword(usuario, password);
 
             RepositorioFactory.Instancia.Usuarios.Insertar(usuario);
+
+            _historial.Grabar(TipoOperacion.Alta,
+                "Alta del usuario '" + usuario.NombreUsuario + "' con rol " + usuario.Rol.Nombre);
+
+
             return usuario;
         }
 
@@ -58,6 +65,10 @@ namespace LockersInteligentes.BLL
                     "Ya existe otro usuario con el nombre '" + usuario.NombreUsuario + "'.");
 
             RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Modificación del usuario '" + usuario.NombreUsuario + "'");
+
         }
         public void Desactivar(int idUsuario)
         {
@@ -77,6 +88,10 @@ namespace LockersInteligentes.BLL
                     "No se puede desactivar al último administrador activo del sistema.");
 
             RepositorioFactory.Instancia.Usuarios.Eliminar(idUsuario);
+
+            _historial.Grabar(TipoOperacion.Baja,
+                "Baja del usuario '" + usuario.NombreUsuario + "'");
+
         }
         public void RestablecerPassword(int idUsuario, string passwordNueva)
         {
@@ -90,6 +105,10 @@ namespace LockersInteligentes.BLL
 
             AsignarPassword(usuario, passwordNueva);
             RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Restablecimiento de contraseña del usuario '" + usuario.NombreUsuario + "'");
+
         }
         public void CambiarPasswordPropia(string passwordActual, string passwordNueva)
         {
@@ -105,6 +124,10 @@ namespace LockersInteligentes.BLL
 
             AsignarPassword(usuario, passwordNueva);
             RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+             "Cambio de contraseña propia");
+
         }
         private void AsignarPassword(Usuario usuario, string password)
         {
@@ -176,6 +199,11 @@ namespace LockersInteligentes.BLL
             AsignarPassword(usuario, password);
 
             RepositorioFactory.Instancia.Usuarios.Insertar(usuario);
+
+            _historial.Grabar(TipoOperacion.Alta,
+               "Autorregistro del operador '" + usuario.NombreUsuario + "'");
+
+
             return usuario;
         }
     }

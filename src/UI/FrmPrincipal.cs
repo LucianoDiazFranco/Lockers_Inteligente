@@ -1,9 +1,9 @@
 ﻿using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.UI.Gestion;
+using LockersInteligentes.UI.Informacion;
 using LockersInteligentes.UI.Operacion;
 using System;
-using System.Drawing;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -30,7 +30,7 @@ namespace LockersInteligentes.UI
                     break;
                 }
             }
-                Usuario usuario = GestorSesion.Instancia.UsuarioActual;
+            Usuario usuario = GestorSesion.Instancia.UsuarioActual;
 
             lblEstadoUsuario.Text = "Usuario: " + usuario.NombreCompleto() +
                                     "   |   Rol: " + usuario.Rol.Nombre;
@@ -112,6 +112,22 @@ namespace LockersInteligentes.UI
         private void mnuResidentes_Click(object sender, EventArgs e)
         {
             AbrirHijo<FrmResidentes>();
+        }
+        private void mnuEntrega_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmRegistrarEntrega>();
+        }
+        private void mnuRetiro_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmRegistrarRetiro>();
+        }
+        private void mnuBitacora_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmBitacora>();
+        } 
+        private void mnuReportes_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmReportes>();
         }
     }
 }

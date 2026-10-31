@@ -9,6 +9,7 @@ namespace LockersInteligentes.BLL
 {
     public class LockerService
     {
+        private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> ListarEdificios()
         {
             ValidarSesion();
@@ -105,6 +106,11 @@ namespace LockersInteligentes.BLL
 
             RepositorioFactory.Instancia.Lockers.Insertar(locker);
             new EdificioService().SincronizarCantidad(idEdificio);
+
+            _historial.Grabar(TipoOperacion.Alta,
+               "Alta del locker " + locker.Numero + " (" + locker.Tamanio +
+               ") en " + edificio.Nombre, locker);
+
             return locker;
         }
         public int GenerarTanda(int idEdificio, int cantidad, int numeroInicial,
@@ -161,6 +167,11 @@ namespace LockersInteligentes.BLL
             }
 
             new EdificioService().SincronizarCantidad(idEdificio);
+
+            _historial.Grabar(TipoOperacion.Alta,
+               "Generación de " + cantidad + " lockers (" + numeroInicial + " a " +
+               (numeroInicial + cantidad - 1) + ", " + tamanio + ") en " + edificio.Nombre);
+
             return cantidad;
         }
 
@@ -183,6 +194,10 @@ namespace LockersInteligentes.BLL
                     "Ya existe otro locker N° " + locker.Numero + " en ese edificio.");
 
             RepositorioFactory.Instancia.Lockers.Actualizar(locker);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Modificación del locker " + locker.Numero, locker);
+
         }
 
         /// <summary>
@@ -212,6 +227,10 @@ namespace LockersInteligentes.BLL
 
             locker.Estado = nuevoEstado;
             RepositorioFactory.Instancia.Lockers.Actualizar(locker);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+            "Locker " + locker.Numero + " pasó a " + nuevoEstado, locker);
+
         }
 
         /// <summary>
@@ -240,6 +259,10 @@ namespace LockersInteligentes.BLL
             int idEdificio = locker.Edificio.Id;
             RepositorioFactory.Instancia.Lockers.Eliminar(idLocker);
             new EdificioService().SincronizarCantidad(idEdificio);
+
+            _historial.Grabar(TipoOperacion.Baja,
+                "Eliminación del locker " + locker.Numero + " de " + locker.Edificio.Nombre);
+
         }
 
         private bool ExisteNumero(int idEdificio, int numero, int idExcluido)

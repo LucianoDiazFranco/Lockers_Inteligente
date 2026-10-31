@@ -41,8 +41,9 @@
             panelSuperior.Dock = System.Windows.Forms.DockStyle.Top;
             panelSuperior.Location = new System.Drawing.Point(0, 0);
             panelSuperior.Name = "panelSuperior";
-            panelSuperior.Size = new System.Drawing.Size(920, 78);
+            panelSuperior.Size = new System.Drawing.Size(1224, 78);
             panelSuperior.TabIndex = 0;
+            panelSuperior.Paint += panelSuperior_Paint;
             // 
             // lblEdificio
             // 
@@ -106,12 +107,12 @@
             // panelLockers
             // 
             panelLockers.AutoScroll = true;
-            panelLockers.BackColor = System.Drawing.Color.Navy;
+            panelLockers.BackColor = System.Drawing.Color.CornflowerBlue;
             panelLockers.Dock = System.Windows.Forms.DockStyle.Fill;
             panelLockers.Location = new System.Drawing.Point(0, 78);
             panelLockers.Name = "panelLockers";
             panelLockers.Padding = new System.Windows.Forms.Padding(14);
-            panelLockers.Size = new System.Drawing.Size(920, 466);
+            panelLockers.Size = new System.Drawing.Size(1224, 466);
             panelLockers.TabIndex = 1;
             // 
             // panelInferior
@@ -122,7 +123,7 @@
             panelInferior.Dock = System.Windows.Forms.DockStyle.Bottom;
             panelInferior.Location = new System.Drawing.Point(0, 544);
             panelInferior.Name = "panelInferior";
-            panelInferior.Size = new System.Drawing.Size(920, 76);
+            panelInferior.Size = new System.Drawing.Size(1224, 76);
             panelInferior.TabIndex = 2;
             // 
             // lblLeyenda
@@ -143,7 +144,7 @@
             // 
             // FrmEstadoLockers
             // 
-            ClientSize = new System.Drawing.Size(920, 620);
+            ClientSize = new System.Drawing.Size(1224, 620);
             Controls.Add(panelLockers);
             Controls.Add(panelInferior);
             Controls.Add(panelSuperior);

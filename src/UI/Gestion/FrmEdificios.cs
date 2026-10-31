@@ -90,7 +90,7 @@ namespace LockersInteligentes.UI.Gestion
                 if (_idSeleccionado == 0)
                 {
                     _servicio.Crear(txtNombre.Text, txtDireccion.Text, txtLocalidad.Text,
-                                    txtTelefono.Text, (int)nudCantLockers.Value);
+                                    txtTelefono.Text);
                     Mostrar("Edificio creado correctamente.", false);
                 }
                 else

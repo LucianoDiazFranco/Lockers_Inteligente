@@ -1,5 +1,6 @@
 ﻿using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace LockersInteligentes.BLL
 {
     public class EdificioService
     {
+        private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> Listar()
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
@@ -54,6 +56,10 @@ namespace LockersInteligentes.BLL
             edificio.CantLockers = 0; // un edificio nuevo arranca sin lockers
 
             RepositorioFactory.Instancia.Edificios.Insertar(edificio);
+
+            _historial.Grabar(TipoOperacion.Alta,
+                "Alta de edificio '" + edificio.Nombre + "' (" + edificio.Localidad + ")");
+
             return edificio;
         }
 
@@ -71,16 +77,11 @@ namespace LockersInteligentes.BLL
                     "Ya existe otro edificio llamado '" + edificio.Nombre.Trim() + "'.");
 
             RepositorioFactory.Instancia.Edificios.Actualizar(edificio);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Modificación del edificio '" + edificio.Nombre + "'");
         }
 
-        /// <summary>
-        /// Baja física, pero solo si el edificio está vacío.
-        ///
-        /// La relación con Locker es composición y la FK tiene ON DELETE CASCADE, así
-        /// que borrar el edificio se llevaría puestos todos sus lockers, y con ellos
-        /// las órdenes que los referencian. Por eso se verifica antes: es preferible
-        /// un mensaje claro a una cascada silenciosa que destruye historial.
-        /// </summary>
         public void Eliminar(int idEdificio)
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
@@ -99,7 +100,12 @@ namespace LockersInteligentes.BLL
                     "No se puede eliminar: el edificio tiene " + residentes +
                     " residente(s) asociados.");
 
+            Edificio edificio = RepositorioFactory.Instancia.Edificios.ObtenerPorId(idEdificio);
+
             RepositorioFactory.Instancia.Edificios.Eliminar(idEdificio);
+
+            _historial.Grabar(TipoOperacion.Baja,
+               "Eliminación del edificio '" + (edificio != null ? edificio.Nombre : "?") + "'");
         }
 
         private bool ExisteNombre(string nombre, int idExcluido)

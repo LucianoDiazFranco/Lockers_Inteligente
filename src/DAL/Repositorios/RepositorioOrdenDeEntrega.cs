@@ -183,5 +183,32 @@ namespace LockersInteligentes.DAL.Repositorios
                 return Convert.ToInt32(comando.ExecuteScalar());
             }
         }
+
+        public IList<OrdenDeEntrega> ObtenerPorEdificioYPeriodo(int idEdificio,
+                                                               DateTime desde, DateTime hasta)
+        {
+            List<OrdenDeEntrega> lista = new List<OrdenDeEntrega>();
+
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                SqlSelect + " WHERE e.IdEdificio = @IdEdificio " +
+                            "   AND o.FechaReserva >= @Desde AND o.FechaReserva <= @Hasta " +
+                            " ORDER BY o.FechaReserva", conexion))
+            {
+                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                comando.Parameters.AddWithValue("@Desde", desde);
+                comando.Parameters.AddWithValue("@Hasta", hasta);
+                conexion.Open();
+
+                using (SqlDataReader lector = comando.ExecuteReader())
+                {
+                    while (lector.Read())
+                        lista.Add(Mapear(lector));
+                }
+            }
+
+            return lista;
+        }
+
     }
 }

@@ -75,6 +75,26 @@ namespace LockersInteligentes.DAL.Repositorios
 
             return codigo;
         }
+        public CodigoAcceso ObtenerUltimo(int idOrden, TipoCodigo tipo)
+        {
+            using (SqlConnection conexion = Conexion.Crear())
+            using (SqlCommand comando = new SqlCommand(
+                SqlSelect + " WHERE IdOrden = @IdOrden AND TipoCodigo = @Tipo " +
+                            " ORDER BY FechaGeneracion DESC", conexion))
+            {
+                comando.Parameters.AddWithValue("@IdOrden", idOrden);
+                comando.Parameters.AddWithValue("@Tipo", (byte)tipo);
+                conexion.Open();
+
+                using (SqlDataReader lector = comando.ExecuteReader())
+                {
+                    if (lector.Read())
+                        return Mapear(lector);
+                }
+            }
+
+            return null;
+        }
 
         protected override void CargarParametros(SqlCommand comando, CodigoAcceso entidad)
         {

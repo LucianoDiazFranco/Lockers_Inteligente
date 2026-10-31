@@ -179,7 +179,7 @@ CREATE TABLE dbo.Reporte (
     NumReporte                  INT IDENTITY(1,1) NOT NULL,
     IdEdificio                  INT           NOT NULL,
     FechaGeneracion             DATETIME2(0)  NOT NULL CONSTRAINT DF_Rep_Fecha DEFAULT (SYSDATETIME()),
-    Periodo                     NVARCHAR(20)  NOT NULL,
+    Periodo                     NVARCHAR(60)  NOT NULL,
     PorcentajeOcupacionLocker   DECIMAL(5,2)  NOT NULL CONSTRAINT DF_Rep_Ocup DEFAULT (0),
     PorcentajePertenenciaLocker DECIMAL(5,2)  NOT NULL CONSTRAINT DF_Rep_Pert DEFAULT (0),
     PaqueteVencido              INT           NOT NULL CONSTRAINT DF_Rep_Venc DEFAULT (0),

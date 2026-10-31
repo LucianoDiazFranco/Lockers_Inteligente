@@ -8,22 +8,11 @@ using System.Linq;
 
 namespace LockersInteligentes.BLL
 {
-    /// <summary>
-    /// Orquestador del ciclo de vida del paquete: CU.Op.001 Reservar Locker,
-    /// CU.Op.002 Registrar Entrega y CU.Op.003 Registrar Retiro.
-    ///
-    /// El service coordina, pero NO decide qué transiciones son válidas: eso lo
-    /// custodian las entidades. Si el locker no está libre, Locker.Reservar() lanza
-    /// la excepción, no un if de acá.
-    /// </summary>
     public class EntregaService
     {
         private readonly EmailService _email = new EmailService();
+        private readonly HistorialService _historial = new HistorialService();
 
-        /// <summary>
-        /// CU.Op.001. Busca un locker libre del tamaño adecuado, lo reserva, crea la
-        /// orden, genera el PIN de apertura y notifica al residente.
-        /// </summary>
         public ResultadoReserva ReservarLocker(int idResidente, TamanioPaquete tamanio,
                                                string descripcion)
         {
@@ -73,9 +62,10 @@ namespace LockersInteligentes.BLL
             resultado.NotificacionEnviada = NotificarReserva(orden, pin.PinEnClaro, out error);
             resultado.MotivoFalloNotificacion = error;
 
-            // PENDIENTE: grabar en bitácora (TipoOperacion.Reserva, locker y orden).
-            // No va acá adentro de un if: la reserva se registra siempre, haya o no
-            // salido el mail.
+            _historial.Grabar(TipoOperacion.Reserva,
+               "Reserva del locker " + locker.Numero + " para " +
+               residente.NombreCompleto() + " (paquete " + tamanio + ")",
+               locker, orden);
 
             return resultado;
         }
@@ -96,11 +86,6 @@ namespace LockersInteligentes.BLL
             return RepositorioFactory.Instancia.Ordenes.ObtenerPorEstado(estado);
         }
 
-        /// <summary>
-        /// CU.Not.001. Un fallo NO revierte la reserva: el diseño establece que la
-        /// operación sigue su curso y la notificación queda registrada como fallida.
-        /// Por eso devuelve bool en vez de lanzar.
-        /// </summary>
         private bool NotificarReserva(OrdenDeEntrega orden, string pin, out string error)
         {
             string cuerpo =
@@ -120,14 +105,247 @@ namespace LockersInteligentes.BLL
                                  cuerpo, out error);
         }
 
-        /// <summary>
-        /// El ciclo del paquete lo pueden operar Administrador y Operador, así que
-        /// alcanza con exigir sesión iniciada. No se valida rol específico.
-        /// </summary>
         private void ValidarSesion()
         {
             if (!GestorSesion.Instancia.HaySesionActiva)
                 throw new InvalidOperationException("No hay una sesión activa.");
+        }
+        public ResultadoEntrega RegistrarEntrega(int idOrden, string pinIngresado, int idRepartidor)
+        {
+            ValidarSesion();
+
+            if (string.IsNullOrWhiteSpace(pinIngresado))
+                throw new InvalidOperationException("Ingresá el PIN de apertura.");
+
+            OrdenDeEntrega orden = RepositorioFactory.Instancia.Ordenes.ObtenerPorId(idOrden);
+
+            if (orden == null)
+                throw new InvalidOperationException("La orden no existe.");
+
+            if (orden.Estado != EstadoOrden.Reservada)
+                throw new InvalidOperationException(
+                    "La orden está " + orden.Estado + ": solo se puede registrar la entrega " +
+                    "de una orden Reservada.");
+
+            Repartidor repartidor = RepositorioFactory.Instancia.Repartidores.ObtenerPorId(idRepartidor);
+
+            if (repartidor == null)
+                throw new InvalidOperationException("Seleccioná un repartidor.");
+
+            CodigoAcceso codigo = RepositorioFactory.Instancia.Codigos
+                                   .ObtenerVigente(idOrden, TipoCodigo.Apertura);
+
+            if (codigo == null)
+            {
+                CodigoAcceso ultimo = RepositorioFactory.Instancia.Codigos
+                                       .ObtenerUltimo(idOrden, TipoCodigo.Apertura);
+
+                if (ultimo != null && ultimo.Usado)
+                    throw new InvalidOperationException(
+                        "Ese PIN de apertura ya fue utilizado: la entrega de esta orden " +
+                        "ya se registró. Actualizá la lista.");
+
+                throw new InvalidOperationException(
+                    "No hay un PIN de apertura vigente para esta orden.");
+            }
+
+            if (codigo.EstaVencido())
+                throw new InvalidOperationException(
+                    "El PIN de apertura venció el " + codigo.FechaExpiracion.ToString("dd/MM/yyyy HH:mm") +
+                    ". Hay que generar una reserva nueva.");
+
+            // Acá está el núcleo del caso de uso: se hashea lo ingresado con el salt
+            // guardado y se compara. El PIN original nunca estuvo en la base.
+            string hashIngresado = EncriptadorService.Encriptar(pinIngresado.Trim(), codigo.PinSalt);
+
+            if (!codigo.CoincideCon(hashIngresado))
+                throw new InvalidOperationException("El PIN de apertura es incorrecto.");
+
+            codigo.MarcarUsado();
+            RepositorioFactory.Instancia.Codigos.Actualizar(codigo);
+
+            orden.MarcarEntregada();
+            orden.RepartidorAsignado = repartidor;
+            RepositorioFactory.Instancia.Ordenes.Actualizar(orden);
+
+            orden.LockerAsignado.Ocupar();
+            RepositorioFactory.Instancia.Lockers.Actualizar(orden.LockerAsignado);
+
+            CodigoAccesoFactory.ResultadoPin pinRetiro =
+                CodigoAccesoFactory.Generar(orden, TipoCodigo.Retiro);
+
+            RepositorioFactory.Instancia.Codigos.Insertar(pinRetiro.Codigo);
+
+            ResultadoEntrega resultado = new ResultadoEntrega();
+            resultado.Orden = orden;
+            resultado.PinRetiro = pinRetiro.PinEnClaro;
+
+            string error;
+            resultado.NotificacionEnviada = NotificarEntrega(orden, pinRetiro.PinEnClaro, out error);
+            resultado.MotivoFalloNotificacion = error;
+
+            _historial.Grabar(TipoOperacion.Entrega,
+            "Entrega en locker " + orden.LockerAsignado.Numero + " por " +
+            repartidor.NombreCompleto(),
+            orden.LockerAsignado, orden);
+
+            return resultado;
+        }
+
+        /// <summary>Órdenes esperando que el repartidor deposite el paquete.</summary>
+        public IList<OrdenDeEntrega> ListarPendientesDeEntrega()
+        {
+            ValidarSesion();
+            return RepositorioFactory.Instancia.Ordenes.ObtenerPorEstado(EstadoOrden.Reservada);
+        }
+
+        public IList<Repartidor> ListarRepartidores()
+        {
+            ValidarSesion();
+
+            return RepositorioFactory.Instancia.Repartidores
+                .ObtenerTodos()
+                .Where(r => r.Activo)
+                .ToList();
+        }
+        public void CancelarReservaVencida(int idOrden)
+        {
+            ValidarSesion();
+
+            OrdenDeEntrega orden = RepositorioFactory.Instancia.Ordenes.ObtenerPorId(idOrden);
+
+            if (orden == null)
+                throw new InvalidOperationException("La orden no existe.");
+
+            if (orden.Estado != EstadoOrden.Reservada)
+                throw new InvalidOperationException(
+                    "Solo se pueden cancelar órdenes en estado Reservada. Esta está " +
+                    orden.Estado + ".");
+
+            if (!orden.ReservaExpirada())
+                throw new InvalidOperationException(
+                    "La reserva todavía está vigente: el PIN de apertura vence el " +
+                    orden.FechaReserva.AddHours(CodigoAcceso.HorasDeVigencia)
+                         .ToString("dd/MM/yyyy HH:mm") + ".");
+
+            // Se anula el PIN pendiente para que no pueda usarse después.
+            CodigoAcceso codigo = RepositorioFactory.Instancia.Codigos
+                                   .ObtenerVigente(idOrden, TipoCodigo.Apertura);
+
+            if (codigo != null)
+            {
+                codigo.Usado = true;
+                RepositorioFactory.Instancia.Codigos.Actualizar(codigo);
+            }
+
+            orden.Estado = EstadoOrden.Retirada;
+            orden.FechaRetiro = DateTime.Now;
+            orden.Descripcion = (orden.Descripcion ?? string.Empty) +
+                                " [Cancelada: reserva vencida sin entrega]";
+            RepositorioFactory.Instancia.Ordenes.Actualizar(orden);
+
+            orden.LockerAsignado.Liberar();
+            RepositorioFactory.Instancia.Lockers.Actualizar(orden.LockerAsignado);
+
+            _historial.Grabar(TipoOperacion.Baja,
+            "Cancelación de reserva vencida. Locker " + orden.LockerAsignado.Numero + " liberado.",
+            orden.LockerAsignado, orden);
+
+        }
+
+        /// <summary>Reservas con el PIN de apertura vencido, candidatas a liberar.</summary>
+        public IList<OrdenDeEntrega> ListarReservasVencidas()
+        {
+            ValidarSesion();
+
+            return RepositorioFactory.Instancia.Ordenes
+                .ObtenerPorEstado(EstadoOrden.Reservada)
+                .Where(o => o.ReservaExpirada())
+                .ToList();
+        }
+
+        private bool NotificarEntrega(OrdenDeEntrega orden, string pin, out string error)
+        {
+            string cuerpo =
+                "Hola " + orden.ResidenteAsignado.Nombre + "," + Environment.NewLine + Environment.NewLine +
+                "Tu paquete ya fue depositado y te está esperando." + Environment.NewLine + Environment.NewLine +
+                "Edificio: " + orden.LockerAsignado.Edificio.Nombre + Environment.NewLine +
+                "Locker:   " + orden.LockerAsignado.Numero +
+                    " (módulo " + orden.LockerAsignado.GrupoLocker + ")" + Environment.NewLine +
+                "Entregado por: " + orden.RepartidorAsignado.NombreCompleto() + Environment.NewLine +
+                Environment.NewLine +
+                "PIN de retiro: " + pin + Environment.NewLine + Environment.NewLine +
+                "Tenés " + OrdenDeEntrega.DiasParaRetirar + " días para retirarlo." +
+                Environment.NewLine + Environment.NewLine +
+                "Lockers Inteligentes";
+
+            return _email.Enviar(orden.ResidenteAsignado.Correo,
+                                 "Paquete depositado - Orden #" + orden.Id,
+                                 cuerpo, out error);
+        }
+
+        public OrdenDeEntrega RegistrarRetiro(int idOrden, string pinIngresado)
+        {
+            ValidarSesion();
+
+            if (string.IsNullOrWhiteSpace(pinIngresado))
+                throw new InvalidOperationException("Ingresá el PIN de retiro.");
+
+            OrdenDeEntrega orden = RepositorioFactory.Instancia.Ordenes.ObtenerPorId(idOrden);
+
+            if (orden == null)
+                throw new InvalidOperationException("La orden no existe.");
+
+            if (orden.Estado != EstadoOrden.Entregada)
+                throw new InvalidOperationException(
+                    "La orden está " + orden.Estado + ": solo se puede registrar el retiro " +
+                    "de una orden Entregada.");
+
+            CodigoAcceso codigo = RepositorioFactory.Instancia.Codigos
+                                   .ObtenerVigente(idOrden, TipoCodigo.Retiro);
+
+            if (codigo == null)
+            {
+                CodigoAcceso ultimo = RepositorioFactory.Instancia.Codigos
+                                       .ObtenerUltimo(idOrden, TipoCodigo.Retiro);
+
+                if (ultimo != null && ultimo.Usado)
+                    throw new InvalidOperationException(
+                        "Ese PIN de retiro ya fue utilizado: el paquete ya se retiró. " +
+                        "Actualizá la lista.");
+
+                throw new InvalidOperationException(
+                    "No hay un PIN de retiro vigente para esta orden.");
+            }
+
+            string hashIngresado = EncriptadorService.Encriptar(pinIngresado.Trim(), codigo.PinSalt);
+
+            if (!string.Equals(codigo.PinHash, hashIngresado, StringComparison.Ordinal))
+                throw new InvalidOperationException("El PIN de retiro es incorrecto.");
+
+            if (codigo.Usado)
+                throw new InvalidOperationException("Ese PIN de retiro ya fue utilizado.");
+
+            codigo.Usado = true;
+            RepositorioFactory.Instancia.Codigos.Actualizar(codigo);
+
+            orden.MarcarRetirada();
+            RepositorioFactory.Instancia.Ordenes.Actualizar(orden);
+
+            orden.LockerAsignado.Liberar();
+            RepositorioFactory.Instancia.Lockers.Actualizar(orden.LockerAsignado);
+
+            _historial.Grabar(TipoOperacion.Retiro,
+            "Retiro del locker " + orden.LockerAsignado.Numero + " por " +
+            orden.ResidenteAsignado.NombreCompleto(),
+            orden.LockerAsignado, orden);
+
+            return orden;
+        }
+        public IList<OrdenDeEntrega> ListarPendientesDeRetiro()
+        {
+            ValidarSesion();
+            return RepositorioFactory.Instancia.Ordenes.ObtenerPorEstado(EstadoOrden.Entregada);
         }
     }
 }

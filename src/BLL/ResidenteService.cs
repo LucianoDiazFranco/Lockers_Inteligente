@@ -1,5 +1,6 @@
 ﻿using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace LockersInteligentes.BLL
 {
     public class ResidenteService
     {
+        private readonly HistorialService _historial = new HistorialService();
         public IList<Residente> ListarPorEdificio(int idEdificio)
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
@@ -56,6 +58,13 @@ namespace LockersInteligentes.BLL
             residente.Activo = true;
 
             RepositorioFactory.Instancia.Residentes.Insertar(residente);
+
+            _historial.Grabar(TipoOperacion.Alta,
+                "Alta del residente " + residente.NombreCompleto() +
+                " (" + residente.Piso + ") en " + edificio.Nombre);
+
+            return residente;
+
             return residente;
         }
 
@@ -73,6 +82,12 @@ namespace LockersInteligentes.BLL
                     "Ya existe otro residente con el DNI " + residente.Dni.Trim() + ".");
 
             RepositorioFactory.Instancia.Residentes.Actualizar(residente);
+
+            RepositorioFactory.Instancia.Residentes.Actualizar(residente);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Modificación del residente " + residente.NombreCompleto());
+
         }
 
         /// <summary>
@@ -91,7 +106,13 @@ namespace LockersInteligentes.BLL
                     "No se puede dar de baja: el residente tiene " + pendientes +
                     " paquete(s) pendiente(s) de entrega o retiro.");
 
+            Residente residente = RepositorioFactory.Instancia.Residentes.ObtenerPorId(idResidente);
+
             RepositorioFactory.Instancia.Residentes.Eliminar(idResidente);
+
+            _historial.Grabar(TipoOperacion.Baja,
+                "Baja del residente " + (residente != null ? residente.NombreCompleto() : "?"));
+
         }
 
         public void Reactivar(int idResidente)
@@ -105,6 +126,10 @@ namespace LockersInteligentes.BLL
 
             residente.Activo = true;
             RepositorioFactory.Instancia.Residentes.Actualizar(residente);
+
+            _historial.Grabar(TipoOperacion.Alta,
+             "Reactivación del residente " + residente.NombreCompleto());
+
         }
 
         private void Validar(string nombre, string apellido, string dni, string correo)

@@ -144,17 +144,17 @@ namespace LockersInteligentes.UI
             // 
             // mnuEntrega
             // 
-            mnuEntrega.Enabled = false;
             mnuEntrega.Name = "mnuEntrega";
             mnuEntrega.Size = new System.Drawing.Size(208, 26);
             mnuEntrega.Text = "Registrar entrega";
+            mnuEntrega.Click += mnuEntrega_Click;
             // 
             // mnuRetiro
             // 
-            mnuRetiro.Enabled = false;
             mnuRetiro.Name = "mnuRetiro";
             mnuRetiro.Size = new System.Drawing.Size(208, 26);
             mnuRetiro.Text = "Registrar retiro";
+            mnuRetiro.Click += mnuRetiro_Click;
             // 
             // mnuInformacion
             // 
@@ -165,17 +165,17 @@ namespace LockersInteligentes.UI
             // 
             // mnuReportes
             // 
-            mnuReportes.Enabled = false;
             mnuReportes.Name = "mnuReportes";
             mnuReportes.Size = new System.Drawing.Size(151, 26);
             mnuReportes.Text = "Reportes";
+            mnuReportes.Click += mnuReportes_Click;
             // 
             // mnuBitacora
             // 
-            mnuBitacora.Enabled = false;
             mnuBitacora.Name = "mnuBitacora";
             mnuBitacora.Size = new System.Drawing.Size(151, 26);
             mnuBitacora.Text = "Bitácora";
+            mnuBitacora.Click += mnuBitacora_Click;
             // 
             // mnuIdioma
             // 

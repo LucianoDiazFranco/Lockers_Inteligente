@@ -1,5 +1,6 @@
 ﻿using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace LockersInteligentes.BLL
 {
     public class RepartidorService
     {
+        private readonly HistorialService _historial = new HistorialService();
         public IList<Repartidor> Listar()
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
@@ -46,6 +48,10 @@ namespace LockersInteligentes.BLL
             repartidor.Activo = true;
 
             RepositorioFactory.Instancia.Repartidores.Insertar(repartidor);
+
+            _historial.Grabar(TipoOperacion.Alta,
+                "Alta del repartidor " + repartidor.NombreCompleto());
+
             return repartidor;
         }
 
@@ -63,6 +69,10 @@ namespace LockersInteligentes.BLL
                     "Ya existe otro repartidor con el DNI " + repartidor.Dni.Trim() + ".");
 
             RepositorioFactory.Instancia.Repartidores.Actualizar(repartidor);
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Modificación del repartidor " + repartidor.NombreCompleto());
+
         }
 
         /// <summary>
@@ -72,7 +82,12 @@ namespace LockersInteligentes.BLL
         public void Desactivar(int idRepartidor)
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
+            Repartidor repartidor = RepositorioFactory.Instancia.Repartidores.ObtenerPorId(idRepartidor);
             RepositorioFactory.Instancia.Repartidores.Eliminar(idRepartidor);
+
+            _historial.Grabar(TipoOperacion.Baja,
+                "Baja del repartidor " + (repartidor != null ? repartidor.NombreCompleto() : "?"));
+
         }
 
         public void Reactivar(int idRepartidor)
@@ -86,6 +101,10 @@ namespace LockersInteligentes.BLL
 
             repartidor.Activo = true;
             RepositorioFactory.Instancia.Repartidores.Actualizar(repartidor);
+
+            _historial.Grabar(TipoOperacion.Alta,
+                "Reactivación del repartidor " + repartidor.NombreCompleto());
+
         }
 
         private void Validar(string nombre, string apellido, string dni)

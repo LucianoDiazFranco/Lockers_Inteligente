@@ -1,12 +1,14 @@
 ﻿using LockersInteligentes.ArqBase.Servicios;
 using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
 
 namespace LockersInteligentes.BLL
 {
     public class LoginService
     {
         private const string MensajeCredencialesInvalidas = "Usuario o contraseña incorrectos.";
+        private readonly HistorialService _historial = new HistorialService();
 
         public ResultadoLogin IniciarSesion(string nombreUsuario, string password)
         {
@@ -41,6 +43,7 @@ namespace LockersInteligentes.BLL
             }
 
             GestorSesion.Instancia.IniciarSesion(usuario);
+            _historial.Grabar(TipoOperacion.Login, "Inicio de sesión correcto.");
 
             resultado.Exitoso = true;
             resultado.Usuario = usuario;

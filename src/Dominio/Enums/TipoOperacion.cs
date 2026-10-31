@@ -11,6 +11,7 @@ namespace LockersInteligentes.Dominio.Enums
         Alta = 20,
         Modificacion = 21,
         Baja = 22,
-        Backup = 30
+        Backup = 30,
+        Consulta = 8
     }
 }
