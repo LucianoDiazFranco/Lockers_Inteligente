@@ -1,5 +1,6 @@
 ﻿using System;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Excepciones;
 
 namespace LockersInteligentes.BLL
 {
@@ -43,7 +44,7 @@ namespace LockersInteligentes.BLL
         public void ValidarRolAdministrador()
         {
             if (!EsAdministrador())
-                throw new UnauthorizedAccessException("Esta operacion requiere el rol Administrador.");
+                throw new AccesoDenegadoException("Esta operación requiere el rol Administrador.");
         }
     }
 }

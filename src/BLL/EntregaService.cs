@@ -5,6 +5,7 @@ using LockersInteligentes.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LockersInteligentes.Dominio.Excepciones;
 
 namespace LockersInteligentes.BLL
 {
@@ -29,9 +30,7 @@ namespace LockersInteligentes.BLL
                                               .ObtenerLibreParaTamanio(residente.Edificio.Id, tamanio);
 
             if (locker == null)
-                throw new InvalidOperationException(
-                    "No hay lockers libres de tamaño " + tamanio + " o superior en " +
-                    residente.Edificio.Nombre + ".");
+                throw new LockerNoDisponibleException(tamanio, residente.Edificio.Nombre);
 
             // La entidad valida la transición Libre -> Reservado.
             locker.Reservar();
@@ -108,7 +107,7 @@ namespace LockersInteligentes.BLL
         private void ValidarSesion()
         {
             if (!GestorSesion.Instancia.HaySesionActiva)
-                throw new InvalidOperationException("No hay una sesión activa.");
+                throw new AccesoDenegadoException("No hay una sesión activa.");
         }
         public ResultadoEntrega RegistrarEntrega(int idOrden, string pinIngresado, int idRepartidor)
         {
@@ -141,25 +140,29 @@ namespace LockersInteligentes.BLL
                                        .ObtenerUltimo(idOrden, TipoCodigo.Apertura);
 
                 if (ultimo != null && ultimo.Usado)
-                    throw new InvalidOperationException(
+                    throw new PinInvalidoException(
+                        PinInvalidoException.Motivo.YaUtilizado, TipoCodigo.Apertura,
                         "Ese PIN de apertura ya fue utilizado: la entrega de esta orden " +
                         "ya se registró. Actualizá la lista.");
 
-                throw new InvalidOperationException(
+                throw new PinInvalidoException(
+                    PinInvalidoException.Motivo.NoExiste, TipoCodigo.Apertura,
                     "No hay un PIN de apertura vigente para esta orden.");
             }
 
             if (codigo.EstaVencido())
-                throw new InvalidOperationException(
-                    "El PIN de apertura venció el " + codigo.FechaExpiracion.ToString("dd/MM/yyyy HH:mm") +
+                throw new PinInvalidoException(
+                    PinInvalidoException.Motivo.Vencido, TipoCodigo.Apertura,
+                    "El PIN de apertura venció el " +
+                    codigo.FechaExpiracion.ToString("dd/MM/yyyy HH:mm") +
                     ". Hay que generar una reserva nueva.");
 
-            // Acá está el núcleo del caso de uso: se hashea lo ingresado con el salt
-            // guardado y se compara. El PIN original nunca estuvo en la base.
             string hashIngresado = EncriptadorService.Encriptar(pinIngresado.Trim(), codigo.PinSalt);
 
             if (!codigo.CoincideCon(hashIngresado))
-                throw new InvalidOperationException("El PIN de apertura es incorrecto.");
+                throw new PinInvalidoException(
+                    PinInvalidoException.Motivo.Incorrecto, TipoCodigo.Apertura,
+                    "El PIN de apertura es incorrecto.");
 
             codigo.MarcarUsado();
             RepositorioFactory.Instancia.Codigos.Actualizar(codigo);
@@ -310,18 +313,22 @@ namespace LockersInteligentes.BLL
                                        .ObtenerUltimo(idOrden, TipoCodigo.Retiro);
 
                 if (ultimo != null && ultimo.Usado)
-                    throw new InvalidOperationException(
+                    throw new PinInvalidoException(
+                        PinInvalidoException.Motivo.YaUtilizado, TipoCodigo.Retiro,
                         "Ese PIN de retiro ya fue utilizado: el paquete ya se retiró. " +
                         "Actualizá la lista.");
 
-                throw new InvalidOperationException(
+                throw new PinInvalidoException(
+                    PinInvalidoException.Motivo.NoExiste, TipoCodigo.Retiro,
                     "No hay un PIN de retiro vigente para esta orden.");
             }
 
             string hashIngresado = EncriptadorService.Encriptar(pinIngresado.Trim(), codigo.PinSalt);
 
             if (!string.Equals(codigo.PinHash, hashIngresado, StringComparison.Ordinal))
-                throw new InvalidOperationException("El PIN de retiro es incorrecto.");
+                throw new PinInvalidoException(
+                    PinInvalidoException.Motivo.Incorrecto, TipoCodigo.Retiro,
+                    "El PIN de retiro es incorrecto.");
 
             if (codigo.Usado)
                 throw new InvalidOperationException("Ese PIN de retiro ya fue utilizado.");

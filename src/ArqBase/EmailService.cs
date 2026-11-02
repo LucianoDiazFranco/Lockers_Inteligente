@@ -18,10 +18,11 @@ namespace LockersInteligentes.ArqBase.Servicios
         public bool Enviar(string destinatario, string asunto, string cuerpo, out string error)
         {
             error = null;
+            string activas = ConfigurationManager.AppSettings["NotificacionesActivas"];
 
-            if (string.IsNullOrWhiteSpace(destinatario))
+            if (!string.IsNullOrWhiteSpace(activas) && activas.ToLower() == "false")
             {
-                error = "El destinatario está vacío.";
+                error = "Notificaciones desactivadas por configuración.";
                 return false;
             }
 

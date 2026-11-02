@@ -1,6 +1,8 @@
+using LockersInteligentes.ArqBase.ArqBase;
+using LockersInteligentes.ArqBase.Servicios;
+using LockersInteligentes.BLL;
 using System;
 using System.Windows.Forms;
-using LockersInteligentes.BLL;
 
 namespace LockersInteligentes.UI
 {
@@ -11,6 +13,16 @@ namespace LockersInteligentes.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Application.ThreadException += (s, args) =>
+            {
+                ErrorLogService.Registrar(args.Exception, "Application.ThreadException",
+                    GestorSesion.Instancia.ActorParaBitacora());
+
+                MessageBox.Show(
+                    "Ocurrió un error inesperado. Quedó registrado en el log de errores.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            };
 
             // El ciclo permite cerrar sesión y volver al login sin reiniciar la app.
             while (true)

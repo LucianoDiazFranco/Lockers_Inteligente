@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LockersInteligentes.ArqBase.ArqBase;
+using LockersInteligentes.BLL;
+using LockersInteligentes.Dominio.Entidades;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,8 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
 
 namespace LockersInteligentes.UI
 {
@@ -48,9 +49,10 @@ namespace LockersInteligentes.UI
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = "Ocurrio un error inesperado.";
-                MessageBox.Show(ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // El detalle técnico va al log; al usuario solo el mensaje general.
+                ErrorLogService.Registrar(ex, "FrmLogin.btnIngresar_Click", txtUsuario.Text);
+                lblMensaje.Text = "No se pudo conectar con el sistema. " +
+                                  "Consultá el log de errores o contactá al administrador.";
             }
             finally
             {

@@ -120,15 +120,8 @@ namespace LockersInteligentes.UI
 
             lblPin.Text = resultado.PinApertura;
 
-            // El PIN se muestra acá porque es la única oportunidad: en la base solo
-            // queda su hash. Si el mail no salió, esta pantalla es el único lugar
-            // del que se puede recuperar.
-            lblAvisoPin.Text = resultado.NotificacionEnviada
-                ? "PIN de apertura enviado por correo al residente. Se muestra acá solo como respaldo."
-                : "No se pudo enviar el correo (" + resultado.MotivoFalloNotificacion +
-                  "). Anotá el PIN: no se puede volver a consultar.";
-
-            lblAvisoPin.ForeColor = resultado.NotificacionEnviada ? Color.Gray : Color.Firebrick;
+            lblAvisoPin.Text = "Comunicale este PIN al residente. No se puede volver a consultar.";
+            lblAvisoPin.ForeColor = Color.Gray;
             grpResultado.Visible = true;
 
             Mostrar("Reserva registrada correctamente.", false);

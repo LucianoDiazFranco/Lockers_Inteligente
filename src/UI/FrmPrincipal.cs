@@ -129,5 +129,9 @@ namespace LockersInteligentes.UI
         {
             AbrirHijo<FrmReportes>();
         }
+        private void mnuErrores_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmErrores>();
+        }
     }
 }

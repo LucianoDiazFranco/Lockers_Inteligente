@@ -1,5 +1,8 @@
-﻿using LockersInteligentes.BLL;
+﻿using LockersInteligentes.ArqBase.ArqBase;
+using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Excepciones;
+using LockersInteligentes.ArqBase.Servicios;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -124,12 +127,39 @@ namespace LockersInteligentes.UI.Operacion
                 txtPin.Clear();
                 CargarPendientes();
             }
-            catch (Exception ex)
+            catch (PinInvalidoException ex)
             {
                 grpResultado.Visible = false;
                 Mostrar(ex.Message, true);
-                txtPin.SelectAll();
-                txtPin.Focus();
+
+                // Según el motivo, la pantalla reacciona distinto. Eso es lo que
+                // una excepción genérica no permitía hacer.
+                if (ex.MotivoFalla == PinInvalidoException.Motivo.YaUtilizado)
+                {
+                    CargarPendientes();
+                }
+                else
+                {
+                    txtPin.SelectAll();
+                    txtPin.Focus();
+                }
+            }
+            catch (ExcepcionNegocio ex)
+            {
+                grpResultado.Visible = false;
+                Mostrar(ex.Message, true);
+            }
+            catch (Exception ex)
+            {
+                // Cualquier cosa que NO sea de negocio es un fallo real del sistema:
+                // va al log con el detalle técnico, y al usuario se le muestra un
+                // mensaje comprensible sin exponer la estructura interna.
+                grpResultado.Visible = false;
+
+                ErrorLogService.Registrar(ex, "FrmRegistrarEntrega.btnRegistrar_Click",
+                    GestorSesion.Instancia.ActorParaBitacora());
+
+                Mostrar("Ocurrió un error inesperado. Consultá el log de errores.", true);
             }
             finally
             {
@@ -155,12 +185,8 @@ namespace LockersInteligentes.UI.Operacion
 
             lblPinRetiro.Text = resultado.PinRetiro;
 
-            lblAvisoPin.Text = resultado.NotificacionEnviada
-                ? "PIN de retiro enviado por correo al residente. Se muestra acá solo como respaldo."
-                : "No se pudo enviar el correo (" + resultado.MotivoFalloNotificacion +
-                  "). Anotá el PIN: no se puede volver a consultar.";
-
-            lblAvisoPin.ForeColor = resultado.NotificacionEnviada ? Color.Gray : Color.Firebrick;
+            lblAvisoPin.Text = "Comunicale este PIN al residente. No se puede volver a consultar.";
+            lblAvisoPin.ForeColor = Color.Gray;
             grpResultado.Visible = true;
 
             Mostrar("Entrega registrada correctamente.", false);

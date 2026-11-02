@@ -4,6 +4,7 @@
     <AssemblyName>LockersInteligentes.ArqBase</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
   </ItemGroup>
   <ItemGroup>

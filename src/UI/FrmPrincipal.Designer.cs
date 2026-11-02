@@ -41,6 +41,7 @@ namespace LockersInteligentes.UI
             mnuIngles = new ToolStripMenuItem();
             barraEstado = new StatusStrip();
             lblEstadoUsuario = new ToolStripStatusLabel();
+            mnuErrores = new ToolStripMenuItem();
             menuPrincipal.SuspendLayout();
             barraEstado.SuspendLayout();
             SuspendLayout();
@@ -158,7 +159,7 @@ namespace LockersInteligentes.UI
             // 
             // mnuInformacion
             // 
-            mnuInformacion.DropDownItems.AddRange(new ToolStripItem[] { mnuReportes, mnuBitacora });
+            mnuInformacion.DropDownItems.AddRange(new ToolStripItem[] { mnuReportes, mnuBitacora, mnuErrores });
             mnuInformacion.Name = "mnuInformacion";
             mnuInformacion.Size = new System.Drawing.Size(103, 24);
             mnuInformacion.Text = "&Información";
@@ -176,6 +177,12 @@ namespace LockersInteligentes.UI
             mnuBitacora.Size = new System.Drawing.Size(151, 26);
             mnuBitacora.Text = "Bitácora";
             mnuBitacora.Click += mnuBitacora_Click;
+            // 
+            // mnuIdioma
+            //
+            mnuErrores.Name = "mnuErrores";
+            mnuErrores.Text = "Log de errores";
+            mnuErrores.Click += mnuErrores_Click;
             // 
             // mnuIdioma
             // 
@@ -250,6 +257,7 @@ namespace LockersInteligentes.UI
         private System.Windows.Forms.ToolStripMenuItem mnuInformacion;
         private System.Windows.Forms.ToolStripMenuItem mnuReportes;
         private System.Windows.Forms.ToolStripMenuItem mnuBitacora;
+        private System.Windows.Forms.ToolStripMenuItem mnuErrores;
         private System.Windows.Forms.StatusStrip barraEstado;
         private System.Windows.Forms.ToolStripStatusLabel lblEstadoUsuario;
         private System.Windows.Forms.ToolStripMenuItem mnuEspaniol;
