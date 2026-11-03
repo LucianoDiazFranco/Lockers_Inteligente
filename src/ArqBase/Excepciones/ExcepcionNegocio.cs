@@ -1,10 +1,11 @@
 ﻿using System;
+using LockersInteligentes.ArqBase.Excepciones;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LockersInteligentes.Dominio.Excepciones
+namespace LockersInteligentes.ArqBase.Excepciones
 {
     public class ExcepcionNegocio : Exception
     {

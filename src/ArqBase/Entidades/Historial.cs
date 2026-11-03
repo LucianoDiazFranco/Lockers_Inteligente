@@ -1,7 +1,7 @@
 using System;
-using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Enums;
 
-namespace LockersInteligentes.Dominio.Entidades
+namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Historial : EntidadBase
     {
@@ -14,9 +14,9 @@ namespace LockersInteligentes.Dominio.Entidades
         public TipoOperacion TipoDeOperacion { get; set; }
         public DateTime FechaOperacion { get; set; }
 
-        public Locker LockerUtilizado { get; set; }
-        public OrdenDeEntrega OrdenDeEntrega { get; set; }
-
+        public int? IdLockerUtilizado { get; set; }
+        public int? IdOrdenDeEntrega { get; set; }
+        public int? NumeroLocker { get; set; }
         public string Detalle { get; set; }
 
         public override string ToString()

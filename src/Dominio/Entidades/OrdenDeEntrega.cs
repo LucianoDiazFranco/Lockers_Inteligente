@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Entidades;
 
 namespace LockersInteligentes.Dominio.Entidades
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.DAL.Repositorios
+namespace LockersInteligentes.ArqBase.DataAccess
 {
     public interface IRepositorio<T> where T : EntidadBase
     {

@@ -1,6 +1,8 @@
 ﻿using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;

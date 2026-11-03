@@ -1,13 +1,13 @@
-﻿using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
+﻿using LockersInteligentes.ArqBase.Enums;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.DAL.Repositorios
+namespace LockersInteligentes.ArqBase.DataAccess
 {
     public class RepositorioHistorial : RepositorioBase<Historial>
     {
@@ -120,20 +120,14 @@ namespace LockersInteligentes.DAL.Repositorios
             historial.FechaOperacion = Convert.ToDateTime(lector["FechaOperacion"]);
             historial.Detalle = lector["Detalle"] == DBNull.Value ? null : lector["Detalle"].ToString();
 
-            if (lector["IdLocker"] != DBNull.Value)
-            {
-                historial.LockerUtilizado = new Locker();
-                historial.LockerUtilizado.Id = Convert.ToInt32(lector["IdLocker"]);
-                historial.LockerUtilizado.Numero = Convert.ToInt32(lector["LockerNumero"]);
-                historial.LockerUtilizado.GrupoLocker = lector["GrupLocker"] == DBNull.Value
-                    ? null : lector["GrupLocker"].ToString();
-            }
+            historial.IdLockerUtilizado = lector["IdLocker"] == DBNull.Value
+                ? (int?)null : Convert.ToInt32(lector["IdLocker"]);
 
-            if (lector["IdOrden"] != DBNull.Value)
-            {
-                historial.OrdenDeEntrega = new OrdenDeEntrega();
-                historial.OrdenDeEntrega.Id = Convert.ToInt32(lector["IdOrden"]);
-            }
+            historial.NumeroLocker = lector["LockerNumero"] == DBNull.Value
+                ? (int?)null : Convert.ToInt32(lector["LockerNumero"]);
+
+            historial.IdOrdenDeEntrega = lector["IdOrden"] == DBNull.Value
+                ? (int?)null : Convert.ToInt32(lector["IdOrden"]);
 
             return historial;
         }
@@ -147,9 +141,9 @@ namespace LockersInteligentes.DAL.Repositorios
                 entidad.Detalle != null ? (object)entidad.Detalle : DBNull.Value);
 
             comando.Parameters.AddWithValue("@IdLocker",
-                entidad.LockerUtilizado != null ? (object)entidad.LockerUtilizado.Id : DBNull.Value);
+                entidad.IdLockerUtilizado.HasValue ? (object)entidad.IdLockerUtilizado.Value : DBNull.Value);
             comando.Parameters.AddWithValue("@IdOrden",
-                entidad.OrdenDeEntrega != null ? (object)entidad.OrdenDeEntrega.Id : DBNull.Value);
+                entidad.IdOrdenDeEntrega.HasValue ? (object)entidad.IdOrdenDeEntrega.Value : DBNull.Value);
         }
     }
 }

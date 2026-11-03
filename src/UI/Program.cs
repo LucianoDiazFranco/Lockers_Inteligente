@@ -1,6 +1,6 @@
 using LockersInteligentes.ArqBase.ArqBase;
 using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.BLL;
+using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Windows.Forms;
 

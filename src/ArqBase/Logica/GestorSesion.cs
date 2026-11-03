@@ -1,8 +1,9 @@
 ﻿using System;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Excepciones;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.BLL
+using LockersInteligentes.ArqBaseExcepciones;
+
+namespace LockersInteligentes.ArqBase.Logica
 {
     public sealed class GestorSesion
     {

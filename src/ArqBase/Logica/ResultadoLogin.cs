@@ -1,6 +1,6 @@
-﻿using LockersInteligentes.Dominio.Entidades;
+﻿using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.ArqBase.Logica
 {
     public class ResultadoLogin
     {

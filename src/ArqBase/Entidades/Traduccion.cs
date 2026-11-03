@@ -1,6 +1,8 @@
-using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.Dominio.Arquitectura
+
+
+namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Traduccion : EntidadBase
     {

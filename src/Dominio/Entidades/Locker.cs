@@ -1,5 +1,6 @@
 using System;
 using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Entidades;
 
 namespace LockersInteligentes.Dominio.Entidades
 {

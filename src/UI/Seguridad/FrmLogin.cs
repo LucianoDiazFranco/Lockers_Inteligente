@@ -1,6 +1,7 @@
 ﻿using LockersInteligentes.ArqBase.ArqBase;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

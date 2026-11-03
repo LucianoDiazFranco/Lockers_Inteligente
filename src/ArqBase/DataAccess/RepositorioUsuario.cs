@@ -1,9 +1,8 @@
 ﻿using System;
-using LockersInteligentes.Dominio.Arquitectura;
-using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.Entidades;
 using Microsoft.Data.SqlClient;
 
-namespace LockersInteligentes.DAL.Repositorios
+namespace LockersInteligentes.ArqBase.DataAccess
 {
    public class RepositorioUsuario : RepositorioBase<Usuario>
     {

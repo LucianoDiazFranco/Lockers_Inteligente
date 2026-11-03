@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.DataAccess;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;

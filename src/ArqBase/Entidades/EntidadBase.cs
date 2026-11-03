@@ -1,4 +1,4 @@
-namespace LockersInteligentes.Dominio.Entidades
+namespace LockersInteligentes.ArqBase.Entidades
 {
 
     public abstract class EntidadBase

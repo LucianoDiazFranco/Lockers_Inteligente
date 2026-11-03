@@ -1,9 +1,10 @@
-﻿using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.DAL.Repositorios;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
+﻿using LockersInteligentes.ArqBase.DataAccess;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Servicios;
+using LockersInteligentes.ArqBase.DataAccess;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.ArqBase.Logica
 {
     public class LoginService
     {
@@ -21,7 +22,7 @@ namespace LockersInteligentes.BLL
                 return resultado;
             }
 
-            Usuario usuario = RepositorioFactory.Instancia.Usuarios
+            Usuario usuario = RepositorioFactoryArq.Instancia.Usuarios
                                                 .ObtenerPorNombreUsuario(nombreUsuario);
 
             if (usuario == null)

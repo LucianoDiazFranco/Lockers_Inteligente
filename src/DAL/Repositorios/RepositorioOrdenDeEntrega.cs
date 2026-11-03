@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.Dominio.Enums;
 using Microsoft.Data.SqlClient;
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LockersInteligentes.ArqBase.Entidades;
 
 namespace LockersInteligentes.Dominio.Entidades
 {

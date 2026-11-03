@@ -1,18 +1,19 @@
-﻿using LockersInteligentes.DAL.Repositorios;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
+﻿using LockersInteligentes.ArqBase.DataAccess;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.ArqBase.Logica
 {
     public class HistorialService
     {
         public void Grabar(TipoOperacion tipo, string detalle,
-                          Locker locker = null, OrdenDeEntrega orden = null)
+                           int? idLocker = null, int? idOrden = null)
         {
             try
             {
@@ -21,10 +22,10 @@ namespace LockersInteligentes.BLL
                 registro.TipoDeOperacion = tipo;
                 registro.FechaOperacion = DateTime.Now;
                 registro.Detalle = detalle;
-                registro.LockerUtilizado = locker;
-                registro.OrdenDeEntrega = orden;
+                registro.IdLockerUtilizado = idLocker;
+                registro.IdOrdenDeEntrega = idOrden;
 
-                RepositorioFactory.Instancia.Historial.Insertar(registro);
+                RepositorioFactoryArq.Instancia.Historial.Insertar(registro);
             }
             catch (Exception ex)
             {
@@ -37,7 +38,7 @@ namespace LockersInteligentes.BLL
                                        string actor, TipoOperacion? tipo)
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
-            return RepositorioFactory.Instancia.Historial.Buscar(desde, hasta, actor, tipo);
+            return RepositorioFactoryArq.Instancia.Historial.Buscar(desde, hasta, actor, tipo);
         }
     }
 }

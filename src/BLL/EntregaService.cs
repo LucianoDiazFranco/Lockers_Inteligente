@@ -2,10 +2,13 @@
 using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using LockersInteligentes.Dominio.Excepciones;
+using LockersInteligentes.ArqBaseExcepciones;
 
 namespace LockersInteligentes.BLL
 {
@@ -64,7 +67,7 @@ namespace LockersInteligentes.BLL
             _historial.Grabar(TipoOperacion.Reserva,
                "Reserva del locker " + locker.Numero + " para " +
                residente.NombreCompleto() + " (paquete " + tamanio + ")",
-               locker, orden);
+               locker.Id, orden.Id);
 
             return resultado;
         }
@@ -188,9 +191,9 @@ namespace LockersInteligentes.BLL
             resultado.MotivoFalloNotificacion = error;
 
             _historial.Grabar(TipoOperacion.Entrega,
-            "Entrega en locker " + orden.LockerAsignado.Numero + " por " +
-            repartidor.NombreCompleto(),
-            orden.LockerAsignado, orden);
+                "Entrega en locker " + orden.LockerAsignado.Numero + " por " +
+                repartidor.NombreCompleto(),
+                orden.LockerAsignado.Id, orden.Id);
 
             return resultado;
         }
@@ -251,8 +254,8 @@ namespace LockersInteligentes.BLL
             RepositorioFactory.Instancia.Lockers.Actualizar(orden.LockerAsignado);
 
             _historial.Grabar(TipoOperacion.Baja,
-            "Cancelación de reserva vencida. Locker " + orden.LockerAsignado.Numero + " liberado.",
-            orden.LockerAsignado, orden);
+                "Cancelación de reserva vencida. Locker " + orden.LockerAsignado.Numero + " liberado.",
+                orden.LockerAsignado.Id, orden.Id);
 
         }
 
@@ -343,9 +346,9 @@ namespace LockersInteligentes.BLL
             RepositorioFactory.Instancia.Lockers.Actualizar(orden.LockerAsignado);
 
             _historial.Grabar(TipoOperacion.Retiro,
-            "Retiro del locker " + orden.LockerAsignado.Numero + " por " +
-            orden.ResidenteAsignado.NombreCompleto(),
-            orden.LockerAsignado, orden);
+                 "Retiro del locker " + orden.LockerAsignado.Numero + " por " +
+                 orden.ResidenteAsignado.NombreCompleto(),
+                 orden.LockerAsignado.Id, orden.Id);
 
             return orden;
         }

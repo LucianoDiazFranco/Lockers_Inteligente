@@ -1,6 +1,6 @@
-﻿using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
+﻿using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -80,10 +80,10 @@ namespace LockersInteligentes.UI.Informacion
                         Fecha = h.FechaOperacion.ToString("dd/MM/yyyy HH:mm:ss"),
                         Usuario = h.Actor,
                         Operacion = h.TipoDeOperacion.ToString(),
-                        Locker = h.LockerUtilizado != null
-                            ? h.LockerUtilizado.Numero.ToString() : "",
-                        Orden = h.OrdenDeEntrega != null
-                            ? "#" + h.OrdenDeEntrega.Id : "",
+                        Locker = h.NumeroLocker.HasValue
+                            ? h.NumeroLocker.Value.ToString() : "",
+                        Orden = h.IdOrdenDeEntrega.HasValue
+                            ? "#" + h.IdOrdenDeEntrega.Value : "",
                         Detalle = h.Detalle
                     })
                     .ToList();

@@ -7,6 +7,7 @@
 		<AssemblyName>LockersInteligentes.UI</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\ArqBase\LockersInteligentes.ArqBase.csproj" />
 		<ProjectReference Include="..\Dominio\LockersInteligentes.Dominio.csproj" />
 		<ProjectReference Include="..\BLL\LockersInteligentes.BLL.csproj" />
 	</ItemGroup>

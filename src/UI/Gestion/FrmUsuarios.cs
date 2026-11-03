@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.UI
 {

@@ -1,6 +1,7 @@
 using System;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.Dominio.Entidades
+namespace LockersInteligentes.ArqBase.Entidades
 {
    public class Rol : EntidadBase
     {

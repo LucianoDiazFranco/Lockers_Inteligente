@@ -1,3 +1,4 @@
+using LockersInteligentes.ArqBase.Entidades;
 namespace LockersInteligentes.Dominio.Entidades
 {
 

@@ -1,11 +1,12 @@
-﻿using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.DAL.Repositorios;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
+﻿using LockersInteligentes.ArqBase.DataAccess;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Servicios;
+using LockersInteligentes.ArqBase.DataAccess;
 using System;
 using System.Collections.Generic;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.ArqBase.Logica
 {
     public class UsuarioService
     {
@@ -14,11 +15,11 @@ namespace LockersInteligentes.BLL
         public IList<Usuario> Listar()
         {
             GestorSesion.Instancia.ValidarRolAdministrador();
-            return RepositorioFactory.Instancia.Usuarios.ObtenerTodos();
+            return RepositorioFactoryArq.Instancia.Usuarios.ObtenerTodos();
         }
         public IList<Rol> ListarRoles()
         {
-            return RepositorioFactory.Instancia.Roles.ObtenerTodos();
+            return RepositorioFactoryArq.Instancia.Roles.ObtenerTodos();
         }
         public Usuario Crear(string nombreUsuario, string nombre, string apellido,
                              string password, int idRol)
@@ -28,7 +29,7 @@ namespace LockersInteligentes.BLL
             ValidarDatos(nombreUsuario, nombre, apellido, idRol);
             ValidarPassword(password);
 
-            if (RepositorioFactory.Instancia.Usuarios.ExisteNombreUsuario(nombreUsuario, 0))
+            if (RepositorioFactoryArq.Instancia.Usuarios.ExisteNombreUsuario(nombreUsuario, 0))
                 throw new InvalidOperationException(
                     "Ya existe un usuario con el nombre '" + nombreUsuario + "'.");
 
@@ -36,12 +37,12 @@ namespace LockersInteligentes.BLL
             usuario.NombreUsuario = nombreUsuario.Trim();
             usuario.Nombre = nombre.Trim();
             usuario.Apellido = apellido.Trim();
-            usuario.Rol = RepositorioFactory.Instancia.Roles.ObtenerPorId(idRol);
+            usuario.Rol = RepositorioFactoryArq.Instancia.Roles.ObtenerPorId(idRol);
             usuario.Activo = true;
 
             AsignarPassword(usuario, password);
 
-            RepositorioFactory.Instancia.Usuarios.Insertar(usuario);
+            RepositorioFactoryArq.Instancia.Usuarios.Insertar(usuario);
 
             _historial.Grabar(TipoOperacion.Alta,
                 "Alta del usuario '" + usuario.NombreUsuario + "' con rol " + usuario.Rol.Nombre);
@@ -60,12 +61,11 @@ namespace LockersInteligentes.BLL
             ValidarDatos(usuario.NombreUsuario, usuario.Nombre, usuario.Apellido,
                          usuario.Rol != null ? usuario.Rol.Id : 0);
 
-            if (RepositorioFactory.Instancia.Usuarios.ExisteNombreUsuario(usuario.NombreUsuario, usuario.Id))
+            if (RepositorioFactoryArq.Instancia.Usuarios.ExisteNombreUsuario(usuario.NombreUsuario, usuario.Id))
                 throw new InvalidOperationException(
                     "Ya existe otro usuario con el nombre '" + usuario.NombreUsuario + "'.");
 
-            RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
-
+            RepositorioFactoryArq.Instancia.Usuarios.Actualizar(usuario);
             _historial.Grabar(TipoOperacion.Modificacion,
                 "Modificación del usuario '" + usuario.NombreUsuario + "'");
 
@@ -77,17 +77,17 @@ namespace LockersInteligentes.BLL
             if (GestorSesion.Instancia.UsuarioActual.Id == idUsuario)
                 throw new InvalidOperationException("No podés desactivar tu propio usuario.");
 
-            Usuario usuario = RepositorioFactory.Instancia.Usuarios.ObtenerPorId(idUsuario);
+            Usuario usuario = RepositorioFactoryArq.Instancia.Usuarios.ObtenerPorId(idUsuario);
 
             if (usuario == null)
                 throw new InvalidOperationException("El usuario no existe.");
 
             if (usuario.EsAdministrador() &&
-                RepositorioFactory.Instancia.Usuarios.ContarAdministradoresActivos() <= 1)
+                RepositorioFactoryArq.Instancia.Usuarios.ContarAdministradoresActivos() <= 1)
                 throw new InvalidOperationException(
                     "No se puede desactivar al último administrador activo del sistema.");
 
-            RepositorioFactory.Instancia.Usuarios.Eliminar(idUsuario);
+            RepositorioFactoryArq.Instancia.Usuarios.Eliminar(idUsuario);
 
             _historial.Grabar(TipoOperacion.Baja,
                 "Baja del usuario '" + usuario.NombreUsuario + "'");
@@ -98,13 +98,13 @@ namespace LockersInteligentes.BLL
             GestorSesion.Instancia.ValidarRolAdministrador();
             ValidarPassword(passwordNueva);
 
-            Usuario usuario = RepositorioFactory.Instancia.Usuarios.ObtenerPorId(idUsuario);
+            Usuario usuario = RepositorioFactoryArq.Instancia.Usuarios.ObtenerPorId(idUsuario);
 
             if (usuario == null)
                 throw new InvalidOperationException("El usuario no existe.");
 
             AsignarPassword(usuario, passwordNueva);
-            RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
+            RepositorioFactoryArq.Instancia.Usuarios.Actualizar(usuario);
 
             _historial.Grabar(TipoOperacion.Modificacion,
                 "Restablecimiento de contraseña del usuario '" + usuario.NombreUsuario + "'");
@@ -123,7 +123,7 @@ namespace LockersInteligentes.BLL
             ValidarPassword(passwordNueva);
 
             AsignarPassword(usuario, passwordNueva);
-            RepositorioFactory.Instancia.Usuarios.Actualizar(usuario);
+            RepositorioFactoryArq.Instancia.Usuarios.Actualizar(usuario);
 
             _historial.Grabar(TipoOperacion.Modificacion,
              "Cambio de contraseña propia");
@@ -177,11 +177,11 @@ namespace LockersInteligentes.BLL
             if (string.IsNullOrWhiteSpace(correo) || !correo.Contains("@"))
                 throw new InvalidOperationException("Ingresá un correo electrónico válido.");
 
-            if (RepositorioFactory.Instancia.Usuarios.ExisteNombreUsuario(nombreUsuario, 0))
+            if (RepositorioFactoryArq.Instancia.Usuarios.ExisteNombreUsuario(nombreUsuario, 0))
                 throw new InvalidOperationException(
                     "Ya existe un usuario con el nombre '" + nombreUsuario + "'.");
 
-            Rol rolOperador = RepositorioFactory.Instancia.Roles
+            Rol rolOperador = RepositorioFactoryArq.Instancia.Roles
                                                 .ObtenerPorNombre(Rol.NombreOperador);
 
             if (rolOperador == null)
@@ -198,7 +198,7 @@ namespace LockersInteligentes.BLL
 
             AsignarPassword(usuario, password);
 
-            RepositorioFactory.Instancia.Usuarios.Insertar(usuario);
+            RepositorioFactoryArq.Instancia.Usuarios.Insertar(usuario);
 
             _historial.Grabar(TipoOperacion.Alta,
                "Autorregistro del operador '" + usuario.NombreUsuario + "'");

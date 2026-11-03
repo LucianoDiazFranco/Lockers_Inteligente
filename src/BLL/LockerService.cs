@@ -4,6 +4,8 @@ using System.Linq;
 using LockersInteligentes.DAL.Repositorios;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.BLL
 {
@@ -109,7 +111,7 @@ namespace LockersInteligentes.BLL
 
             _historial.Grabar(TipoOperacion.Alta,
                "Alta del locker " + locker.Numero + " (" + locker.Tamanio +
-               ") en " + edificio.Nombre, locker);
+               ") en " + edificio.Nombre, locker.Id);
 
             return locker;
         }
@@ -196,7 +198,7 @@ namespace LockersInteligentes.BLL
             RepositorioFactory.Instancia.Lockers.Actualizar(locker);
 
             _historial.Grabar(TipoOperacion.Modificacion,
-                "Modificación del locker " + locker.Numero, locker);
+                "Modificación del locker " + locker.Numero, locker.Id);
 
         }
 
@@ -229,7 +231,7 @@ namespace LockersInteligentes.BLL
             RepositorioFactory.Instancia.Lockers.Actualizar(locker);
 
             _historial.Grabar(TipoOperacion.Modificacion,
-            "Locker " + locker.Numero + " pasó a " + nuevoEstado, locker);
+            "Locker " + locker.Numero + " pasó a " + nuevoEstado, locker.Id);
 
         }
 

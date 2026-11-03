@@ -1,6 +1,5 @@
-namespace LockersInteligentes.Dominio.Enums
+namespace LockersInteligentes.ArqBase.Enums
 {
-
     public enum TipoOperacion
     {
         Reserva = 1,

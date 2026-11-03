@@ -1,6 +1,5 @@
-﻿using LockersInteligentes.Dominio.Arquitectura;
-
-namespace LockersInteligentes.Dominio.Entidades
+﻿using LockersInteligentes.ArqBase.Entidades;
+namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Usuario : EntidadBase
     {

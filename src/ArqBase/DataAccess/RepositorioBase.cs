@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.Entidades;
 using Microsoft.Data.SqlClient;
 
-namespace LockersInteligentes.DAL.Repositorios
+
+namespace LockersInteligentes.ArqBase.DataAccess
 {
     public abstract class RepositorioBase<T> : IRepositorio<T> where T : EntidadBase
     {

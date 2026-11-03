@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.Dominio.Enums;
+using LockersInteligentes.ArqBase.Excepciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;

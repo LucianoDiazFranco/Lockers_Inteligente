@@ -1,4 +1,5 @@
-﻿using LockersInteligentes.DAL;
+﻿using LockersInteligentes.ArqBase.DataAccess;
+using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.BLL
 {

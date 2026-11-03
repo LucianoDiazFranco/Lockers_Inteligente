@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LockersInteligentes.ArqBase.Servicios;
+using LockersInteligentes.ArqBase.Entidades;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.ArqBase.Logica
 {
     public class SeguridadService
     {

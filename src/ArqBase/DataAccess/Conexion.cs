@@ -2,7 +2,7 @@
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 
-namespace LockersInteligentes.DAL
+namespace LockersInteligentes.ArqBase.DataAccess
 {
     public static class Conexion
     {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using LockersInteligentes.Dominio.Entidades;
-
-namespace LockersInteligentes.Dominio.Arquitectura
+using LockersInteligentes.ArqBase.Entidades;
+namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Idioma : EntidadBase
     {

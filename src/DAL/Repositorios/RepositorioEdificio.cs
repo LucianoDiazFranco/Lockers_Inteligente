@@ -1,5 +1,6 @@
 ﻿using System;
 using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.ArqBase.DataAccess;
 using Microsoft.Data.SqlClient;
 
 namespace LockersInteligentes.DAL.Repositorios

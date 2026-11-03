@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using LockersInteligentes.BLL;
+using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.UI
 {

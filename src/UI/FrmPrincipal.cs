@@ -1,5 +1,5 @@
-﻿using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
+﻿using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.UI.Gestion;
 using LockersInteligentes.UI.Informacion;
 using LockersInteligentes.UI.Operacion;
