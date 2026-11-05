@@ -2,20 +2,16 @@
 using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Gestion
 {
     public partial class FrmResidentes : Form
     {
-        private readonly ResidenteService _servicio = new ResidenteService();
-        private readonly LockerService _lockerService = new LockerService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
 
         private IList<Residente> _residentes = new List<Residente>();
         private int _idSeleccionado;
@@ -29,7 +25,7 @@ namespace LockersInteligentes.UI.Gestion
             {
                 cboFiltroEdificio.DisplayMember = "Nombre";
                 cboFiltroEdificio.ValueMember = "Id";
-                cboFiltroEdificio.DataSource = _lockerService.ListarEdificios();
+                cboFiltroEdificio.DataSource = _sistema.EdificiosParaPanel();
 
                 CargarGrilla();
                 LimpiarCampos();
@@ -53,7 +49,7 @@ namespace LockersInteligentes.UI.Gestion
 
             try
             {
-                _residentes = _servicio.ListarPorEdificio(
+                _residentes = _sistema.ListarResidentes(
                     Convert.ToInt32(cboFiltroEdificio.SelectedValue));
 
                 dgvResidentes.DataSource = _residentes
@@ -136,7 +132,7 @@ namespace LockersInteligentes.UI.Gestion
 
                 if (_idSeleccionado == 0)
                 {
-                    _servicio.Crear(idEdificio, txtNombre.Text, txtApellido.Text, txtDni.Text,
+                    _sistema.CrearResidente(idEdificio, txtNombre.Text, txtApellido.Text, txtDni.Text,
                                     txtCorreo.Text, txtPiso.Text, txtTelefono.Text);
                     Mostrar("Residente creado correctamente.", false);
                 }
@@ -152,7 +148,7 @@ namespace LockersInteligentes.UI.Gestion
                     residente.Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text)
                         ? null : txtTelefono.Text.Trim();
 
-                    _servicio.Modificar(residente);
+                    _sistema.ModificarResidente(residente);
                     Mostrar("Residente actualizado correctamente.", false);
                 }
 
@@ -180,7 +176,7 @@ namespace LockersInteligentes.UI.Gestion
             try
             {
                 // Si tiene paquetes pendientes, el service corta acá con el motivo.
-                _servicio.Desactivar(_idSeleccionado);
+                _sistema.DesactivarResidente(_idSeleccionado);
                 Mostrar("Residente dado de baja. Su historial de paquetes se conserva.", false);
                 CargarGrilla();
                 LimpiarCampos();
@@ -201,7 +197,7 @@ namespace LockersInteligentes.UI.Gestion
 
             try
             {
-                _servicio.Reactivar(_idSeleccionado);
+                _sistema.ReactivarResidente(_idSeleccionado);
                 Mostrar("Residente reactivado.", false);
                 CargarGrilla();
                 LimpiarCampos();

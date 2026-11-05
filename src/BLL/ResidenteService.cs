@@ -5,8 +5,6 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LockersInteligentes.BLL
 {
@@ -15,7 +13,7 @@ namespace LockersInteligentes.BLL
         private readonly HistorialService _historial = new HistorialService();
         public IList<Residente> ListarPorEdificio(int idEdificio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarResidentes);
             return RepositorioFactory.Instancia.Residentes.ObtenerPorEdificio(idEdificio);
         }
 
@@ -37,7 +35,7 @@ namespace LockersInteligentes.BLL
         public Residente Crear(int idEdificio, string nombre, string apellido, string dni,
                                string correo, string piso, string telefono)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarResidentes);
             Validar(nombre, apellido, dni, correo);
 
             if (RepositorioFactory.Instancia.Residentes.ExisteDni(dni.Trim(), 0))
@@ -71,7 +69,7 @@ namespace LockersInteligentes.BLL
 
         public void Modificar(Residente residente)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarResidentes);
 
             if (residente == null)
                 throw new ArgumentNullException("residente");
@@ -98,7 +96,7 @@ namespace LockersInteligentes.BLL
         /// </summary>
         public void Desactivar(int idResidente)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarResidentes);
 
             int pendientes = RepositorioFactory.Instancia.Ordenes.ContarActivasPorResidente(idResidente);
 
@@ -118,7 +116,7 @@ namespace LockersInteligentes.BLL
 
         public void Reactivar(int idResidente)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarResidentes);
 
             Residente residente = RepositorioFactory.Instancia.Residentes.ObtenerPorId(idResidente);
 

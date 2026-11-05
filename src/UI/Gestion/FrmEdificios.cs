@@ -14,7 +14,7 @@ namespace LockersInteligentes.UI.Gestion
 {
     public partial class FrmEdificios : Form
     {
-        private readonly EdificioService _servicio = new EdificioService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Edificio> _edificios = new List<Edificio>();
         private int _idSeleccionado;
         public FrmEdificios()
@@ -31,8 +31,7 @@ namespace LockersInteligentes.UI.Gestion
         {
             try
             {
-                _edificios = _servicio.Listar();
-
+                _edificios = _sistema.ListarEdificios();
                 dgvEdificios.DataSource = _edificios
                     .Select(ed => new
                     {
@@ -89,7 +88,7 @@ namespace LockersInteligentes.UI.Gestion
             {
                 if (_idSeleccionado == 0)
                 {
-                    _servicio.Crear(txtNombre.Text, txtDireccion.Text, txtLocalidad.Text,
+                    _sistema.CrearEdificio(txtNombre.Text, txtDireccion.Text, txtLocalidad.Text,
                                     txtTelefono.Text);
                     Mostrar("Edificio creado correctamente.", false);
                 }
@@ -103,7 +102,7 @@ namespace LockersInteligentes.UI.Gestion
                         ? null : txtTelefono.Text.Trim();
                     edificio.CantLockers = (int)nudCantLockers.Value;
 
-                    _servicio.Modificar(edificio);
+                    _sistema.ModificarEdificio(edificio);
                     Mostrar("Edificio actualizado correctamente.", false);
                 }
 
@@ -130,7 +129,7 @@ namespace LockersInteligentes.UI.Gestion
 
             try
             {
-                _servicio.Eliminar(_idSeleccionado);
+                _sistema.EliminarEdificio(_idSeleccionado);
                 Mostrar("Edificio eliminado.", false);
                 CargarGrilla();
                 LimpiarCampos();

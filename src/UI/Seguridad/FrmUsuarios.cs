@@ -1,20 +1,17 @@
-﻿using System;
+﻿using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.BLL;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using LockersInteligentes.ArqBase.Entidades;
-using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.UI
 {
     public partial class FrmUsuarios : Form
     {
-        private readonly UsuarioService _servicio = new UsuarioService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Usuario> _usuarios = new List<Usuario>();
         private int _idSeleccionado;
 
@@ -26,7 +23,7 @@ namespace LockersInteligentes.UI
         {
             try
             {
-                cboRol.DataSource = _servicio.ListarRoles();
+                cboRol.DataSource = _sistema.ListarRoles();
                 cboRol.DisplayMember = "Nombre";
                 cboRol.ValueMember = "Id";
 
@@ -40,7 +37,7 @@ namespace LockersInteligentes.UI
         }
         private void CargarGrilla()
         {
-            _usuarios = _servicio.Listar();
+            _usuarios = _sistema.ListarUsuarios();
 
             dgvUsuarios.DataSource = _usuarios
                 .Select(u => new
@@ -94,7 +91,7 @@ namespace LockersInteligentes.UI
 
                 if (_idSeleccionado == 0)
                 {
-                    _servicio.Crear(txtNombreUsuario.Text, txtNombre.Text,
+                    _sistema.CrearUsuario(txtNombreUsuario.Text, txtNombre.Text,
                                     txtApellido.Text, txtPassword.Text, idRol);
                     Mostrar("Usuario creado correctamente.", false);
                 }
@@ -106,10 +103,10 @@ namespace LockersInteligentes.UI
                     usuario.Apellido = txtApellido.Text.Trim();
                     usuario.Rol = (Rol)cboRol.SelectedItem;
 
-                    _servicio.Modificar(usuario);
+                    _sistema.ModificarUsuario(usuario);
 
                     if (!string.IsNullOrWhiteSpace(txtPassword.Text))
-                        _servicio.RestablecerPassword(_idSeleccionado, txtPassword.Text);
+                        _sistema.RestablecerPassword(_idSeleccionado, txtPassword.Text);
 
                     Mostrar("Usuario actualizado correctamente.", false);
                 }
@@ -136,7 +133,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                _servicio.Desactivar(_idSeleccionado);
+                _sistema.DesactivarUsuario(_idSeleccionado);
                 Mostrar("Usuario desactivado.", false);
                 CargarGrilla();
                 LimpiarCampos();

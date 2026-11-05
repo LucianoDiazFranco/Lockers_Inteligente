@@ -2,9 +2,6 @@
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LockersInteligentes.ArqBase.Entidades;
 
 namespace LockersInteligentes.ArqBase.DataAccess

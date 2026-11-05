@@ -2,19 +2,16 @@
 using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Operacion
 {
     public partial class FrmRegistrarRetiro : Form
     {
-        private readonly EntregaService _servicio = new EntregaService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<OrdenDeEntrega> _pendientes = new List<OrdenDeEntrega>();
         public FrmRegistrarRetiro()
         {
@@ -29,7 +26,7 @@ namespace LockersInteligentes.UI.Operacion
         {
             try
             {
-                _pendientes = _servicio.ListarPendientesDeRetiro();
+                _pendientes = _sistema.PendientesDeRetiro();
 
                 dgvPendientes.DataSource = _pendientes
                     .Select(o => new
@@ -115,7 +112,7 @@ namespace LockersInteligentes.UI.Operacion
 
             try
             {
-                OrdenDeEntrega orden = _servicio.RegistrarRetiro(seleccionada.Id, txtPin.Text);
+                OrdenDeEntrega orden = _sistema.RegistrarRetiro(seleccionada.Id, txtPin.Text);
 
                 MostrarResultado(orden);
                 txtPin.Clear();

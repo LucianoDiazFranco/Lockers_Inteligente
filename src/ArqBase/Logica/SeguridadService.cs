@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.ArqBase.Entidades;
+﻿using LockersInteligentes.ArqBase.Servicios;
+
 
 namespace LockersInteligentes.ArqBase.Logica
 {

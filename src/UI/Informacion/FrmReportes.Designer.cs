@@ -237,9 +237,9 @@
             // lblRankRepartidores
             // 
             lblRankRepartidores.BackColor = System.Drawing.Color.LightBlue;
-            lblRankRepartidores.Location = new System.Drawing.Point(0, 142);
+            lblRankRepartidores.Location = new System.Drawing.Point(0, 162);
             lblRankRepartidores.Name = "lblRankRepartidores";
-            lblRankRepartidores.Size = new System.Drawing.Size(444, 148);
+            lblRankRepartidores.Size = new System.Drawing.Size(444, 128);
             lblRankRepartidores.TabIndex = 8;
             // 
             // lblRankLockTitulo
@@ -256,9 +256,9 @@
             // lblRankLockers
             // 
             lblRankLockers.BackColor = System.Drawing.Color.LightBlue;
-            lblRankLockers.Location = new System.Drawing.Point(444, 155);
+            lblRankLockers.Location = new System.Drawing.Point(444, 162);
             lblRankLockers.Name = "lblRankLockers";
-            lblRankLockers.Size = new System.Drawing.Size(436, 135);
+            lblRankLockers.Size = new System.Drawing.Size(436, 128);
             lblRankLockers.TabIndex = 10;
             // 
             // lblHistorialTitulo

@@ -1,7 +1,4 @@
-﻿using LockersInteligentes.ArqBase.DataAccess;
-
-
-
+﻿
 namespace LockersInteligentes.DAL.Repositorios
 {
     public sealed class RepositorioFactory

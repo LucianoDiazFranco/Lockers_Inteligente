@@ -188,3 +188,33 @@ CREATE TABLE dbo.Reporte (
     CONSTRAINT PK_Reporte          PRIMARY KEY (NumReporte),
     CONSTRAINT FK_Reporte_Edificio FOREIGN KEY (IdEdificio) REFERENCES dbo.Edificio (IdEdificio)
 );
+CREATE TABLE dbo.Componente (
+    IdComponente   INT IDENTITY(1,1) NOT NULL,
+    Nombre         NVARCHAR(80)  NOT NULL,
+    Descripcion    NVARCHAR(200) NULL,
+    TipoComponente TINYINT       NOT NULL,   -- 1 Patente (hoja), 2 Familia (compuesto)
+    CONSTRAINT PK_Componente        PRIMARY KEY (IdComponente),
+    CONSTRAINT UQ_Componente_Nombre UNIQUE (Nombre),
+    CONSTRAINT CK_Componente_Tipo   CHECK (TipoComponente IN (1, 2))
+);
+
+CREATE TABLE dbo.ComponenteHijo (
+    IdPadre INT NOT NULL,
+    IdHijo  INT NOT NULL,
+    CONSTRAINT PK_ComponenteHijo PRIMARY KEY (IdPadre, IdHijo),
+    CONSTRAINT FK_CompHijo_Padre FOREIGN KEY (IdPadre) REFERENCES dbo.Componente (IdComponente),
+    CONSTRAINT FK_CompHijo_Hijo  FOREIGN KEY (IdHijo)  REFERENCES dbo.Componente (IdComponente),
+    CONSTRAINT CK_CompHijo_NoSiMismo CHECK (IdPadre <> IdHijo)
+);
+
+/* Qué tiene asignado cada usuario: puede ser una familia entera o patentes sueltas. */
+CREATE TABLE dbo.UsuarioComponente (
+    IdUsuario    INT NOT NULL,
+    IdComponente INT NOT NULL,
+    CONSTRAINT PK_UsuarioComponente PRIMARY KEY (IdUsuario, IdComponente),
+    CONSTRAINT FK_UsuComp_Usuario    FOREIGN KEY (IdUsuario)
+        REFERENCES dbo.Usuario (IdUsuario) ON DELETE CASCADE,
+    CONSTRAINT FK_UsuComp_Componente FOREIGN KEY (IdComponente)
+        REFERENCES dbo.Componente (IdComponente)
+);
+GO

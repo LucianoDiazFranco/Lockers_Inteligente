@@ -5,12 +5,9 @@ using LockersInteligentes.Dominio.Excepciones;
 using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LockersInteligentes.ArqBase.Excepciones;
 
@@ -19,7 +16,7 @@ namespace LockersInteligentes.UI.Operacion
     /// <summary>CU.Op.002 Registrar Entrega.</summary>
     public partial class FrmRegistrarEntrega : Form
     {
-        private readonly EntregaService _servicio = new EntregaService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<OrdenDeEntrega> _pendientes = new List<OrdenDeEntrega>();
         public FrmRegistrarEntrega()
         {
@@ -31,7 +28,7 @@ namespace LockersInteligentes.UI.Operacion
             {
                 cboRepartidor.DisplayMember = "Texto";
                 cboRepartidor.ValueMember = "Id";
-                cboRepartidor.DataSource = _servicio.ListarRepartidores()
+                cboRepartidor.DataSource = _sistema.RepartidoresActivos()
                     .Select(r => new { r.Id, Texto = r.NombreCompleto() })
                     .ToList();
 
@@ -47,7 +44,7 @@ namespace LockersInteligentes.UI.Operacion
         {
             try
             {
-                _pendientes = _servicio.ListarPendientesDeEntrega();
+                _pendientes = _sistema.PendientesDeEntrega();
 
                 dgvPendientes.DataSource = _pendientes
                     .Select(o => new
@@ -121,7 +118,7 @@ namespace LockersInteligentes.UI.Operacion
 
             try
             {
-                ResultadoEntrega resultado = _servicio.RegistrarEntrega(
+                ResultadoEntrega resultado = _sistema.RegistrarEntrega(
                     orden.Id, txtPin.Text, Convert.ToInt32(cboRepartidor.SelectedValue));
 
                 MostrarResultado(resultado);
@@ -222,7 +219,7 @@ namespace LockersInteligentes.UI.Operacion
 
             try
             {
-                _servicio.CancelarReservaVencida(orden.Id);
+                _sistema.CancelarReservaVencida(orden.Id);
                 Mostrar("Locker " + orden.LockerAsignado.Numero + " liberado.", false);
                 grpResultado.Visible = false;
                 CargarPendientes();

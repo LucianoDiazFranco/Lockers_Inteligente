@@ -5,8 +5,6 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LockersInteligentes.BLL
 {
@@ -15,7 +13,7 @@ namespace LockersInteligentes.BLL
         private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> Listar()
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarEdificios);
 
             IList<Edificio> edificios = RepositorioFactory.Instancia.Edificios.ObtenerTodos();
             IDictionary<int, int> conteo = RepositorioFactory.Instancia.Lockers.ContarPorEdificio();
@@ -42,7 +40,7 @@ namespace LockersInteligentes.BLL
         public Edificio Crear(string nombre, string direccion, string localidad,
                               string telefono)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarEdificios);
             Validar(nombre, direccion, localidad, 0);
 
             if (ExisteNombre(nombre, 0))
@@ -66,7 +64,7 @@ namespace LockersInteligentes.BLL
 
         public void Modificar(Edificio edificio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarEdificios);
 
             if (edificio == null)
                 throw new ArgumentNullException("edificio");
@@ -85,7 +83,7 @@ namespace LockersInteligentes.BLL
 
         public void Eliminar(int idEdificio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarEdificios);
 
             int lockers = RepositorioFactory.Instancia.Lockers.ObtenerPorEdificio(idEdificio).Count;
 

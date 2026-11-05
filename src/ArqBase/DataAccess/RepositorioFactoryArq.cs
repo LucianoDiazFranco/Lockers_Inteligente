@@ -13,6 +13,7 @@ namespace LockersInteligentes.ArqBase.DataAccess
         private RepositorioUsuario _usuarios;
         private RepositorioRol _roles;
         private RepositorioHistorial _historial;
+        private RepositorioComponente _componentes;
 
         private RepositorioFactoryArq()
         {
@@ -53,6 +54,16 @@ namespace LockersInteligentes.ArqBase.DataAccess
                     _historial = new RepositorioHistorial();
 
                 return _historial;
+            }
+        }
+        public RepositorioComponente Componentes
+        {
+            get
+            {
+                if (_componentes == null)
+                    _componentes = new RepositorioComponente();
+
+                return _componentes;
             }
         }
     }

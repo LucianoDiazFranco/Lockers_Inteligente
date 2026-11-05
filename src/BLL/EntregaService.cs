@@ -20,6 +20,7 @@ namespace LockersInteligentes.BLL
         public ResultadoReserva ReservarLocker(int idResidente, TamanioPaquete tamanio,
                                                string descripcion)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.Reservar);
             ValidarSesion();
 
             Residente residente = RepositorioFactory.Instancia.Residentes.ObtenerPorId(idResidente);
@@ -114,6 +115,7 @@ namespace LockersInteligentes.BLL
         }
         public ResultadoEntrega RegistrarEntrega(int idOrden, string pinIngresado, int idRepartidor)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.Reservar);
             ValidarSesion();
 
             if (string.IsNullOrWhiteSpace(pinIngresado))
@@ -292,6 +294,7 @@ namespace LockersInteligentes.BLL
 
         public OrdenDeEntrega RegistrarRetiro(int idOrden, string pinIngresado)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.Reservar);
             ValidarSesion();
 
             if (string.IsNullOrWhiteSpace(pinIngresado))

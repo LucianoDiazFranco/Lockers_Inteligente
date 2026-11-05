@@ -11,7 +11,7 @@ namespace LockersInteligentes.UI
     
     public partial class FrmRepartidores : Form
     {
-        private readonly RepartidorService _servicio = new RepartidorService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Repartidor> _repartidores = new List<Repartidor>();
         private int _idSeleccionado;
 
@@ -30,7 +30,7 @@ namespace LockersInteligentes.UI
         {
             try
             {
-                _repartidores = _servicio.Listar();
+                _repartidores = _sistema.ListarRepartidores();
 
                 dgvRepartidores.DataSource = _repartidores
                     .Select(r => new
@@ -110,7 +110,7 @@ namespace LockersInteligentes.UI
             {
                 if (_idSeleccionado == 0)
                 {
-                    _servicio.Crear(txtNombre.Text, txtApellido.Text, txtDni.Text,
+                    _sistema.CrearRepartidor(txtNombre.Text, txtApellido.Text, txtDni.Text,
                                     txtEmpresa.Text, txtTelefono.Text);
                     Mostrar("Repartidor creado correctamente.", false);
                 }
@@ -125,7 +125,7 @@ namespace LockersInteligentes.UI
                     repartidor.Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text)
                         ? null : txtTelefono.Text.Trim();
 
-                    _servicio.Modificar(repartidor);
+                    _sistema.ModificarRepartidor(repartidor);
                     Mostrar("Repartidor actualizado correctamente.", false);
                 }
 
@@ -152,7 +152,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                _servicio.Desactivar(_idSeleccionado);
+                _sistema.DesactivarRepartidor(_idSeleccionado);
                 Mostrar("Repartidor dado de baja. Sus entregas siguen en el historial.", false);
                 CargarGrilla();
                 LimpiarCampos();
@@ -173,7 +173,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                _servicio.Reactivar(_idSeleccionado);
+                _sistema.ReactivarRepartidor(_idSeleccionado);
                 Mostrar("Repartidor reactivado.", false);
                 CargarGrilla();
                 LimpiarCampos();

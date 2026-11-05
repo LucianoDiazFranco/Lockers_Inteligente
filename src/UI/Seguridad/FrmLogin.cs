@@ -16,7 +16,7 @@ namespace LockersInteligentes.UI
 {
     public partial class FrmLogin : Form
     {
-        private readonly LoginService _loginService = new LoginService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         public Usuario UsuarioAutenticado { get; private set; }
 
         public FrmLogin()
@@ -32,7 +32,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                ResultadoLogin resultado = _loginService.IniciarSesion(
+                ResultadoLogin resultado = _sistema.IniciarSesion(
                     txtUsuario.Text.Trim(), txtContrasenia.Text);
 
                 if (resultado.Exitoso)

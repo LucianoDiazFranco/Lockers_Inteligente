@@ -5,8 +5,6 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LockersInteligentes.BLL
 {
@@ -15,7 +13,7 @@ namespace LockersInteligentes.BLL
         private readonly HistorialService _historial = new HistorialService();
         public IList<Repartidor> Listar()
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarRepartidores);
             return RepositorioFactory.Instancia.Repartidores.ObtenerTodos();
         }
 
@@ -34,7 +32,7 @@ namespace LockersInteligentes.BLL
         public Repartidor Crear(string nombre, string apellido, string dni,
                                 string empresa, string telefono)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarRepartidores);
             Validar(nombre, apellido, dni);
 
             if (RepositorioFactory.Instancia.Repartidores.ExisteDni(dni.Trim(), 0))
@@ -58,7 +56,7 @@ namespace LockersInteligentes.BLL
 
         public void Modificar(Repartidor repartidor)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarRepartidores);
 
             if (repartidor == null)
                 throw new ArgumentNullException("repartidor");
@@ -82,7 +80,7 @@ namespace LockersInteligentes.BLL
         /// </summary>
         public void Desactivar(int idRepartidor)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarRepartidores);
             Repartidor repartidor = RepositorioFactory.Instancia.Repartidores.ObtenerPorId(idRepartidor);
             RepositorioFactory.Instancia.Repartidores.Eliminar(idRepartidor);
 
@@ -93,7 +91,7 @@ namespace LockersInteligentes.BLL
 
         public void Reactivar(int idRepartidor)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarRepartidores);
 
             Repartidor repartidor = RepositorioFactory.Instancia.Repartidores.ObtenerPorId(idRepartidor);
 

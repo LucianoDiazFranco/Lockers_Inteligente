@@ -1,4 +1,4 @@
-﻿using LockersInteligentes.ArqBase.Entidades;
+﻿
 namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Usuario : EntidadBase

@@ -22,7 +22,7 @@ namespace LockersInteligentes.UI
         private static readonly Color ColorVencido = Color.FromArgb(222, 160, 32);
         private static readonly Color ColorFuera = Color.FromArgb(110, 118, 129);
 
-        private readonly LockerService _servicio = new LockerService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<EstadoLockerVista> _vista = new List<EstadoLockerVista>();
 
         public FrmEstadoLockers()
@@ -36,7 +36,7 @@ namespace LockersInteligentes.UI
             {
                 cboEdificio.DisplayMember = "Nombre";
                 cboEdificio.ValueMember = "Id";
-                cboEdificio.DataSource = _servicio.ListarEdificios();
+                cboEdificio.DataSource = _sistema.EdificiosParaPanel();
 
                 MostrarLeyenda();
                 Recargar();
@@ -69,7 +69,7 @@ namespace LockersInteligentes.UI
                 return;
 
             List<string> sectores = new List<string> { "(todos)" };
-            sectores.AddRange(_servicio.ListarSectores(Convert.ToInt32(cboEdificio.SelectedValue)));
+            sectores.AddRange(_sistema.SectoresDeEdificio(Convert.ToInt32(cboEdificio.SelectedValue)));
 
             cboSector.DataSource = sectores;
         }
@@ -82,7 +82,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                _vista = _servicio.ObtenerEstado(Convert.ToInt32(cboEdificio.SelectedValue));
+                _vista = _sistema.EstadoDeLockers(Convert.ToInt32(cboEdificio.SelectedValue));
                 MostrarResumen();
                 Dibujar();
             }
@@ -94,7 +94,7 @@ namespace LockersInteligentes.UI
 
         private void MostrarResumen()
         {
-            ResumenLockers r = _servicio.Resumir(_vista);
+            ResumenLockers r = _sistema.ResumirLockers(_vista);
 
             lblResumen.Text =
                 r.Total + " lockers   |   " +

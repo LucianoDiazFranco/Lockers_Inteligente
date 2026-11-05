@@ -1,10 +1,11 @@
-﻿using LockersInteligentes.ArqBase.DataAccess;
+﻿using LockersInteligentes.ArqBase.Composite;
+using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.ArqBase.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LockersInteligentes.ArqBase.Logica
 {
@@ -14,7 +15,7 @@ namespace LockersInteligentes.ArqBase.Logica
         private const int LongitudMinimaPassword = 8;
         public IList<Usuario> Listar()
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
             return RepositorioFactoryArq.Instancia.Usuarios.ObtenerTodos();
         }
         public IList<Rol> ListarRoles()
@@ -24,7 +25,7 @@ namespace LockersInteligentes.ArqBase.Logica
         public Usuario Crear(string nombreUsuario, string nombre, string apellido,
                              string password, int idRol)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
 
             ValidarDatos(nombreUsuario, nombre, apellido, idRol);
             ValidarPassword(password);
@@ -43,7 +44,7 @@ namespace LockersInteligentes.ArqBase.Logica
             AsignarPassword(usuario, password);
 
             RepositorioFactoryArq.Instancia.Usuarios.Insertar(usuario);
-
+            AsignarPermisosIniciales(usuario);
             _historial.Grabar(TipoOperacion.Alta,
                 "Alta del usuario '" + usuario.NombreUsuario + "' con rol " + usuario.Rol.Nombre);
 
@@ -53,7 +54,7 @@ namespace LockersInteligentes.ArqBase.Logica
 
         public void Modificar(Usuario usuario)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
 
             if (usuario == null)
                 throw new ArgumentNullException("usuario");
@@ -72,7 +73,7 @@ namespace LockersInteligentes.ArqBase.Logica
         }
         public void Desactivar(int idUsuario)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
 
             if (GestorSesion.Instancia.UsuarioActual.Id == idUsuario)
                 throw new InvalidOperationException("No podés desactivar tu propio usuario.");
@@ -95,7 +96,7 @@ namespace LockersInteligentes.ArqBase.Logica
         }
         public void RestablecerPassword(int idUsuario, string passwordNueva)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
             ValidarPassword(passwordNueva);
 
             Usuario usuario = RepositorioFactoryArq.Instancia.Usuarios.ObtenerPorId(idUsuario);
@@ -199,12 +200,34 @@ namespace LockersInteligentes.ArqBase.Logica
             AsignarPassword(usuario, password);
 
             RepositorioFactoryArq.Instancia.Usuarios.Insertar(usuario);
-
+            AsignarPermisosIniciales(usuario);
             _historial.Grabar(TipoOperacion.Alta,
                "Autorregistro del operador '" + usuario.NombreUsuario + "'");
 
 
             return usuario;
         }
+        private void AsignarPermisosIniciales(Usuario usuario)
+        {
+            try
+            {
+                string familia = usuario.EsAdministrador()
+                    ? "Administración"
+                    : "Operación de paquetes";
+
+                Componente componente = RepositorioFactoryArq.Instancia.Componentes
+                    .ObtenerArbolCompleto().Values
+                    .FirstOrDefault(c => c.Nombre == familia);
+
+                if (componente != null)
+                    RepositorioFactoryArq.Instancia.Componentes
+                        .AsignarAUsuario(usuario.Id, componente.Id);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Fallo al asignar permisos iniciales: " + ex.Message);
+            }
+        }
+
     }
 }

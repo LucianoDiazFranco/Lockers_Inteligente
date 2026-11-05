@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using LockersInteligentes.ArqBase.Entidades;
 namespace LockersInteligentes.ArqBase.Entidades
 {
     public class Idioma : EntidadBase

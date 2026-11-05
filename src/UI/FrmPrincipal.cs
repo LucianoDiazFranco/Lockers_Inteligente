@@ -30,22 +30,60 @@ namespace LockersInteligentes.UI
                     break;
                 }
             }
+
             Usuario usuario = GestorSesion.Instancia.UsuarioActual;
 
             lblEstadoUsuario.Text = "Usuario: " + usuario.NombreCompleto() +
                                     "   |   Rol: " + usuario.Rol.Nombre;
 
             AplicarPermisosDeMenu();
-            AbrirHijo<FrmEstadoLockers>();
+
+            if (GestorSesion.Instancia.TienePermiso(PermisoService.Patentes.VerEstadoLockers))
+                AbrirHijo<FrmEstadoLockers>();
         }
 
         private void AplicarPermisosDeMenu()
         {
-            bool esAdmin = GestorSesion.Instancia.EsAdministrador();
+            GestorSesion sesion = GestorSesion.Instancia;
 
-            mnuSeguridad.Visible = esAdmin;
-            mnuGestion.Visible = esAdmin;
-            mnuInformacion.Visible = esAdmin;
+            bool verUsuarios = sesion.TienePermiso(PermisoService.Patentes.GestionarUsuarios);
+            mnuUsuarios.Visible = verUsuarios;
+            mnuSeguridad.Visible = verUsuarios;
+
+            bool verEdificios = sesion.TienePermiso(PermisoService.Patentes.GestionarEdificios);
+            bool verLockers = sesion.TienePermiso(PermisoService.Patentes.GestionarLockers);
+            bool verResidentes = sesion.TienePermiso(PermisoService.Patentes.GestionarResidentes);
+            bool verRepartidores = sesion.TienePermiso(PermisoService.Patentes.GestionarRepartidores);
+
+            mnuEdificios.Visible = verEdificios;
+            mnuLockers.Visible = verLockers;
+            mnuResidentes.Visible = verResidentes;
+            mnuRepartidores.Visible = verRepartidores;
+            mnuGestion.Visible = verEdificios || verLockers || verResidentes || verRepartidores;
+
+            bool verEstado = sesion.TienePermiso(PermisoService.Patentes.VerEstadoLockers);
+            bool verReservar = sesion.TienePermiso(PermisoService.Patentes.Reservar);
+            bool verEntrega = sesion.TienePermiso(PermisoService.Patentes.RegistrarEntrega);
+            bool verRetiro = sesion.TienePermiso(PermisoService.Patentes.RegistrarRetiro);
+
+            mnuEstadoLockers.Visible = verEstado;
+            mnuReservar.Visible = verReservar;
+            mnuEntrega.Visible = verEntrega;
+            mnuRetiro.Visible = verRetiro;
+            mnuOperacion.Visible = verEstado || verReservar || verEntrega || verRetiro;
+
+            bool verReportes = sesion.TienePermiso(PermisoService.Patentes.VerReportes);
+            bool verBitacora = sesion.TienePermiso(PermisoService.Patentes.VerBitacora);
+            bool verErrores = sesion.TienePermiso(PermisoService.Patentes.VerErrores);
+
+            mnuReportes.Visible = verReportes;
+            mnuBitacora.Visible = verBitacora;
+            mnuErrores.Visible = verErrores;
+            mnuInformacion.Visible = verReportes || verBitacora || verErrores;
+
+            bool verPermisos = sesion.TienePermiso(PermisoService.Patentes.GestionarPermisos);
+            mnuPermisos.Visible = verPermisos;
+            mnuSeguridad.Visible = verUsuarios || verPermisos;
         }
 
         private void mnuUsuarios_Click(object sender, EventArgs e)
@@ -132,6 +170,10 @@ namespace LockersInteligentes.UI
         private void mnuErrores_Click(object sender, EventArgs e)
         {
             AbrirHijo<FrmErrores>();
+        }
+        private void mnuPermisos_Click(object sender, EventArgs e)
+        {
+            AbrirHijo<FrmPermisos>();
         }
     }
 }

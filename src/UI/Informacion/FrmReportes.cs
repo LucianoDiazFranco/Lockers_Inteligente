@@ -2,19 +2,16 @@
 using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
 {
     public partial class FrmReportes : Form
     {
-        private readonly ReporteService _servicio = new ReporteService();
+        private readonly SistemaLockersFacade _servicio = SistemaLockersFacade.Instancia;
         private IList<Reporte> _reportes = new List<Reporte>();
         public FrmReportes()
         {
@@ -55,7 +52,7 @@ namespace LockersInteligentes.UI.Informacion
 
             try
             {
-                Reporte reporte = _servicio.Generar(
+                Reporte reporte = _servicio.GenerarReporte(
                     Convert.ToInt32(cboEdificio.SelectedValue),
                     dtpDesde.Value,
                     dtpHasta.Value);
@@ -100,7 +97,7 @@ namespace LockersInteligentes.UI.Informacion
         {
             try
             {
-                _reportes = _servicio.ListarGenerados();
+                _reportes = _servicio.ListarReportes();
 
                 dgvReportes.DataSource = _reportes
                     .Select(r => new

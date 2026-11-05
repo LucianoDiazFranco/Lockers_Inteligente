@@ -6,8 +6,6 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LockersInteligentes.BLL
 {
@@ -17,13 +15,13 @@ namespace LockersInteligentes.BLL
 
         public IList<Edificio> ListarEdificios()
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerReportes);
             return RepositorioFactory.Instancia.Edificios.ObtenerTodos();
         }
 
         public IList<Reporte> ListarGenerados()
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerReportes);
 
             return RepositorioFactory.Instancia.Reportes
                 .ObtenerTodos()
@@ -34,7 +32,7 @@ namespace LockersInteligentes.BLL
         /// <summary>Calcula las métricas y persiste el reporte.</summary>
         public Reporte Generar(int idEdificio, DateTime desde, DateTime hasta)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerReportes);
 
             if (hasta < desde)
                 throw new InvalidOperationException("La fecha final no puede ser anterior a la inicial.");

@@ -4,13 +4,10 @@ using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
@@ -158,6 +155,7 @@ namespace LockersInteligentes.UI.Informacion
         /// </summary>
         private void btnBackup_Click(object sender, EventArgs e)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.EjecutarBackup);
             using (SaveFileDialog dialogo = new SaveFileDialog())
             {
                 dialogo.Filter = "Script SQL (*.sql)|*.sql";

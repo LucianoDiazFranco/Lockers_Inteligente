@@ -8,7 +8,7 @@ namespace LockersInteligentes.UI
 {
     public partial class FrmRegistro : Form
     {
-        private readonly UsuarioService _servicio = new UsuarioService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         public string UsuarioCreado { get; private set; }
 
         public FrmRegistro()
@@ -33,7 +33,7 @@ namespace LockersInteligentes.UI
 
             try
             {
-                _servicio.RegistrarOperador(
+                _sistema.RegistrarOperador(
                     txtNombreUsuario.Text.Trim(),
                     txtNombre.Text.Trim(),
                     txtApellido.Text.Trim(),

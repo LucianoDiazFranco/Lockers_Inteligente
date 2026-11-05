@@ -15,7 +15,7 @@ namespace LockersInteligentes.UI.Gestion
 {
     public partial class FrmLockers : Form
     {
-        private readonly LockerService _servicio = new LockerService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Locker> _lockers = new List<Locker>();
         private int _idSeleccionado;
         public FrmLockers()
@@ -28,7 +28,7 @@ namespace LockersInteligentes.UI.Gestion
             {
                 cboFiltroEdificio.DisplayMember = "Nombre";
                 cboFiltroEdificio.ValueMember = "Id";
-                cboFiltroEdificio.DataSource = _servicio.ListarEdificios();
+                cboFiltroEdificio.DataSource = _sistema.EdificiosParaPanel();
 
                 cboTamanio.DataSource = Enum.GetValues(typeof(TamanioPaquete));
 
@@ -62,7 +62,7 @@ namespace LockersInteligentes.UI.Gestion
 
             try
             {
-                _lockers = _servicio.ListarPorEdificio(Convert.ToInt32(cboFiltroEdificio.SelectedValue));
+                _lockers = _sistema.ListarLockers(Convert.ToInt32(cboFiltroEdificio.SelectedValue));
 
                 dgvLockers.DataSource = _lockers
                     .Select(l => new
@@ -140,7 +140,7 @@ namespace LockersInteligentes.UI.Gestion
 
                 if (_idSeleccionado == 0)
                 {
-                    _servicio.Crear(idEdificio, (int)nudNumero.Value, txtSector.Text,
+                    _sistema.CrearLocker(idEdificio, (int)nudNumero.Value, txtSector.Text,
                                     txtDescripcion.Text, tamanio);
                     Mostrar("Locker creado correctamente.", false);
                 }
@@ -154,7 +154,7 @@ namespace LockersInteligentes.UI.Gestion
                         ? null : txtDescripcion.Text.Trim();
                     locker.Tamanio = tamanio;
 
-                    _servicio.Modificar(locker);
+                    _sistema.ModificarLocker(locker);
 
                     // El estado va por su propio método, que valida las transiciones.
                     if (cboEstado.Enabled && cboEstado.SelectedItem != null)
@@ -162,7 +162,7 @@ namespace LockersInteligentes.UI.Gestion
                         EstadoLocker nuevo = (EstadoLocker)cboEstado.SelectedItem;
 
                         if (nuevo != locker.Estado)
-                            _servicio.CambiarEstado(locker.Id, nuevo);
+                            _sistema.CambiarEstadoLocker(locker.Id, nuevo);
                     }
 
                     Mostrar("Locker actualizado correctamente.", false);
@@ -191,7 +191,7 @@ namespace LockersInteligentes.UI.Gestion
 
             try
             {
-                _servicio.Eliminar(_idSeleccionado);
+                _sistema.EliminarLocker(_idSeleccionado);
                 Mostrar("Locker eliminado.", false);
                 CargarGrilla();
                 LimpiarCampos();

@@ -11,7 +11,7 @@ namespace LockersInteligentes.UI
 {
     public partial class FrmReservarLocker : Form
     {
-        private readonly EntregaService _servicio = new EntregaService();
+        private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Residente> _residentes = new List<Residente>();
 
         public FrmReservarLocker()
@@ -23,7 +23,7 @@ namespace LockersInteligentes.UI
         {
             try
             {
-                _residentes = _servicio.ListarResidentes();
+                _residentes = _sistema.ResidentesActivos();
 
                 cboResidente.DisplayMember = "Texto";
                 cboResidente.ValueMember = "Id";
@@ -87,7 +87,7 @@ namespace LockersInteligentes.UI
             {
                 TamanioPaquete tamanio = (TamanioPaquete)cboTamanio.SelectedItem;
 
-                ResultadoReserva resultado = _servicio.ReservarLocker(
+                ResultadoReserva resultado = _sistema.ReservarLocker(
                     residente.Id, tamanio, txtDescripcion.Text.Trim());
 
                 MostrarResultado(resultado);

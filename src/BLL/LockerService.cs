@@ -14,11 +14,13 @@ namespace LockersInteligentes.BLL
         private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> ListarEdificios()
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerEstadoLockers);
             ValidarSesion();
             return RepositorioFactory.Instancia.Edificios.ObtenerTodos();
         }
         public IList<EstadoLockerVista> ObtenerEstado(int idEdificio)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerEstadoLockers);
             ValidarSesion();
 
             IList<Locker> lockers = RepositorioFactory.Instancia.Lockers
@@ -44,6 +46,7 @@ namespace LockersInteligentes.BLL
         }
         public IList<string> ListarSectores(int idEdificio)
         {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerEstadoLockers);
             ValidarSesion();
 
             return RepositorioFactory.Instancia.Lockers
@@ -79,14 +82,14 @@ namespace LockersInteligentes.BLL
 
         public IList<Locker> ListarPorEdificio(int idEdificio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
             return RepositorioFactory.Instancia.Lockers.ObtenerPorEdificio(idEdificio);
         }
 
         public Locker Crear(int idEdificio, int numero, string sector, string descripcion,
                             TamanioPaquete tamanio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
             ValidarDatos(numero);
 
             if (ExisteNumero(idEdificio, numero, 0))
@@ -118,7 +121,7 @@ namespace LockersInteligentes.BLL
         public int GenerarTanda(int idEdificio, int cantidad, int numeroInicial,
                                 string sector, TamanioPaquete tamanio)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
 
             if (cantidad <= 0)
                 throw new InvalidOperationException("La cantidad debe ser mayor a cero.");
@@ -184,7 +187,7 @@ namespace LockersInteligentes.BLL
         /// </summary>
         public void Modificar(Locker locker)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
 
             if (locker == null)
                 throw new ArgumentNullException("locker");
@@ -209,7 +212,7 @@ namespace LockersInteligentes.BLL
         /// </summary>
         public void CambiarEstado(int idLocker, EstadoLocker nuevoEstado)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
 
             Locker locker = RepositorioFactory.Instancia.Lockers.ObtenerPorId(idLocker);
 
@@ -242,7 +245,7 @@ namespace LockersInteligentes.BLL
         /// </summary>
         public void Eliminar(int idLocker)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarLockers);
 
             Locker locker = RepositorioFactory.Instancia.Lockers.ObtenerPorId(idLocker);
 

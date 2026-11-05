@@ -1,14 +1,11 @@
-﻿using LockersInteligentes.ArqBase.Logica;
-using LockersInteligentes.ArqBase.Entidades;
+﻿using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.BLL;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
@@ -17,7 +14,7 @@ namespace LockersInteligentes.UI.Informacion
     {
         private const string TodasLasOperaciones = "(todas)";
 
-        private readonly HistorialService _servicio = new HistorialService();
+        private readonly SistemaLockersFacade _servicio = SistemaLockersFacade.Instancia;
         public FrmBitacora()
         {
             InitializeComponent();
@@ -71,7 +68,7 @@ namespace LockersInteligentes.UI.Informacion
                 if (cboTipo.SelectedItem is TipoOperacion)
                     tipo = (TipoOperacion)cboTipo.SelectedItem;
 
-                IList<Historial> registros = _servicio.Buscar(desde, hasta, txtActor.Text, tipo);
+                IList<Historial> registros = _servicio.BuscarBitacora(desde, hasta, txtActor.Text, tipo);
 
                 dgvHistorial.DataSource = registros
                     .Select(h => new

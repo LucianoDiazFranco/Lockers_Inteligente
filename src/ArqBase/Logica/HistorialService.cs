@@ -1,12 +1,9 @@
 ﻿using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
-using LockersInteligentes.ArqBase.DataAccess;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LockersInteligentes.ArqBase.Logica
 {
@@ -37,7 +34,7 @@ namespace LockersInteligentes.ArqBase.Logica
         public IList<Historial> Buscar(DateTime? desde, DateTime? hasta,
                                        string actor, TipoOperacion? tipo)
         {
-            GestorSesion.Instancia.ValidarRolAdministrador();
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.VerBitacora);
             return RepositorioFactoryArq.Instancia.Historial.Buscar(desde, hasta, actor, tipo);
         }
     }

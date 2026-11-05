@@ -2,7 +2,6 @@
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Servicios;
-using LockersInteligentes.ArqBase.DataAccess;
 
 namespace LockersInteligentes.ArqBase.Logica
 {

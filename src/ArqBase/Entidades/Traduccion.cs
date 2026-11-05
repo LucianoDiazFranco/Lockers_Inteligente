@@ -1,5 +1,3 @@
-using LockersInteligentes.ArqBase.Entidades;
-
 
 
 namespace LockersInteligentes.ArqBase.Entidades
