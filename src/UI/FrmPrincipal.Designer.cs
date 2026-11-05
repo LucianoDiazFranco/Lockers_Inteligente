@@ -203,12 +203,14 @@ namespace LockersInteligentes.UI
             mnuEspaniol.Name = "mnuEspaniol";
             mnuEspaniol.Size = new System.Drawing.Size(144, 26);
             mnuEspaniol.Text = "Español";
+            mnuEspaniol.Click += mnuEspaniol_Click;
             // 
             // mnuIngles
             // 
             mnuIngles.Name = "mnuIngles";
             mnuIngles.Size = new System.Drawing.Size(144, 26);
             mnuIngles.Text = "English";
+            mnuIngles.Click += mnuIngles_Click;
             // 
             // barraEstado
             // 

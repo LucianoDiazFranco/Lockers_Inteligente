@@ -1,5 +1,6 @@
-﻿using LockersInteligentes.ArqBase.Logica;
+﻿using LockersInteligentes.ArqBase.ArqBase;
 using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.UI.Gestion;
 using LockersInteligentes.UI.Informacion;
 using LockersInteligentes.UI.Operacion;
@@ -9,13 +10,14 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
-    public partial class FrmPrincipal : Form
+    public partial class FrmPrincipal : Form,IObservadorIdioma
     {
         public bool CerroSesion { get; private set; }
 
         public FrmPrincipal()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
@@ -31,12 +33,8 @@ namespace LockersInteligentes.UI
                 }
             }
 
-            Usuario usuario = GestorSesion.Instancia.UsuarioActual;
-
-            lblEstadoUsuario.Text = "Usuario: " + usuario.NombreCompleto() +
-                                    "   |   Rol: " + usuario.Rol.Nombre;
-
             AplicarPermisosDeMenu();
+            ActualizarIdioma();
 
             if (GestorSesion.Instancia.TienePermiso(PermisoService.Patentes.VerEstadoLockers))
                 AbrirHijo<FrmEstadoLockers>();
@@ -175,5 +173,81 @@ namespace LockersInteligentes.UI
         {
             AbrirHijo<FrmPermisos>();
         }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            mnuArchivo.Text = idioma.Traducir("Menu.Archivo");
+            mnuCerrarSesion.Text = idioma.Traducir("Menu.CerrarSesion");
+            mnuSalir.Text = idioma.Traducir("Menu.Salir");
+
+            mnuSeguridad.Text = idioma.Traducir("Menu.Seguridad");
+            mnuUsuarios.Text = idioma.Traducir("Menu.Usuarios");
+            mnuPermisos.Text = idioma.Traducir("Menu.Permisos");
+
+            mnuGestion.Text = idioma.Traducir("Menu.Gestion");
+            mnuEdificios.Text = idioma.Traducir("Menu.Edificios");
+            mnuLockers.Text = idioma.Traducir("Menu.Lockers");
+            mnuResidentes.Text = idioma.Traducir("Menu.Residentes");
+            mnuRepartidores.Text = idioma.Traducir("Menu.Repartidores");
+
+            mnuOperacion.Text = idioma.Traducir("Menu.Operacion");
+            mnuEstadoLockers.Text = idioma.Traducir("Menu.EstadoLockers");
+            mnuReservar.Text = idioma.Traducir("Menu.Reservar");
+            mnuEntrega.Text = idioma.Traducir("Menu.Entrega");
+            mnuRetiro.Text = idioma.Traducir("Menu.Retiro");
+
+            mnuInformacion.Text = idioma.Traducir("Menu.Informacion");
+            mnuReportes.Text = idioma.Traducir("Menu.Reportes");
+            mnuBitacora.Text = idioma.Traducir("Menu.Bitacora");
+            mnuErrores.Text = idioma.Traducir("Menu.Errores");
+
+            mnuIdioma.Text = idioma.Traducir("Menu.Idioma");
+
+            Usuario usuario = GestorSesion.Instancia.UsuarioActual;
+
+            if (usuario != null)
+                lblEstadoUsuario.Text = string.Format(
+                    idioma.Traducir("FrmPrincipal.Estado"),
+                    usuario.NombreCompleto(),
+                    usuario.Rol.Nombre);
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+        private void mnuEspaniol_Click(object sender, EventArgs e)
+        {
+            CambiarIdioma("es-AR");
+        }
+
+        private void mnuIngles_Click(object sender, EventArgs e)
+        {
+            CambiarIdioma("en-US");
+        }
+
+        /// <summary>
+        /// Cambia el idioma activo. El gestor recarga el diccionario y notifica a
+        /// TODOS los formularios suscriptos, incluidos los hijos MDI que estén
+        /// abiertos. FrmPrincipal no conoce a ninguno de ellos: solo pide el cambio.
+        /// </summary>
+        private void CambiarIdioma(string codigo)
+        {
+            try
+            {
+                GestorIdioma.Instancia.CambiarIdioma(codigo);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogService.Registrar(ex, "FrmPrincipal.CambiarIdioma",
+                    GestorSesion.Instancia.ActorParaBitacora());
+
+                MessageBox.Show("No se pudo cambiar el idioma.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }

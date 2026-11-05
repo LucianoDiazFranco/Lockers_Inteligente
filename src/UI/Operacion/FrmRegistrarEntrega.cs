@@ -14,13 +14,14 @@ using LockersInteligentes.ArqBase.Excepciones;
 namespace LockersInteligentes.UI.Operacion
 {
     /// <summary>CU.Op.002 Registrar Entrega.</summary>
-    public partial class FrmRegistrarEntrega : Form
+    public partial class FrmRegistrarEntrega : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<OrdenDeEntrega> _pendientes = new List<OrdenDeEntrega>();
         public FrmRegistrarEntrega()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
         private void FrmRegistrarEntrega_Load(object sender, EventArgs e)
         {
@@ -33,6 +34,7 @@ namespace LockersInteligentes.UI.Operacion
                     .ToList();
 
                 CargarPendientes();
+                ActualizarIdioma();
             }
             catch (Exception ex)
             {
@@ -44,6 +46,10 @@ namespace LockersInteligentes.UI.Operacion
         {
             try
             {
+                GestorIdioma idioma = GestorIdioma.Instancia;
+                string vigente = idioma.Traducir("FrmEntrega.Vigente");
+                string vencido = idioma.Traducir("FrmEntrega.Vencido");
+
                 _pendientes = _sistema.PendientesDeEntrega();
 
                 dgvPendientes.DataSource = _pendientes
@@ -57,24 +63,31 @@ namespace LockersInteligentes.UI.Operacion
                         Locker = o.LockerAsignado.Numero,
                         Paquete = o.TamanioPaquete.ToString(),
                         Reservada = o.FechaReserva.ToString("dd/MM/yyyy HH:mm"),
-                        Estado = o.ReservaExpirada() ? "PIN vencido" : "Vigente"
+                        Estado = o.ReservaExpirada() ? vencido : vigente
                     })
                     .ToList();
 
                 if (dgvPendientes.Columns.Contains("Id"))
                     dgvPendientes.Columns["Id"].Visible = false;
 
-                // Las reservas con el PIN vencido se marcan: ese PIN ya no sirve y
-                // el intento va a fallar, mejor avisarlo antes.
+                TraducirColumna("Orden", "Comun.Orden");
+                TraducirColumna("Residente", "Comun.Residente");
+                TraducirColumna("Piso", "Comun.Piso");
+                TraducirColumna("Edificio", "Comun.Edificio");
+                TraducirColumna("Locker", "Comun.Locker");
+                TraducirColumna("Paquete", "Comun.Paquete");
+                TraducirColumna("Reservada", "FrmEntrega.colReserv");
+                TraducirColumna("Estado", "Comun.Estado");
+
                 foreach (DataGridViewRow fila in dgvPendientes.Rows)
                 {
                     if (fila.Cells["Estado"].Value != null &&
-                        fila.Cells["Estado"].Value.ToString() == "PIN vencido")
+                        fila.Cells["Estado"].Value.ToString() == vencido)
                         fila.DefaultCellStyle.ForeColor = Color.Firebrick;
                 }
 
                 if (_pendientes.Count == 0)
-                    Mostrar("No hay órdenes esperando entrega.", false);
+                    Mostrar(idioma.Traducir("FrmEntrega.SinPend"), false);
             }
             catch (Exception ex)
             {
@@ -102,13 +115,13 @@ namespace LockersInteligentes.UI.Operacion
 
             if (orden == null)
             {
-                Mostrar("Seleccioná una orden de la lista.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("Val.Orden"), true);
                 return;
             }
 
             if (cboRepartidor.SelectedValue == null)
             {
-                Mostrar("Seleccioná el repartidor que trae el paquete.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("Val.Repartidor"), true);
                 return;
             }
 
@@ -157,7 +170,7 @@ namespace LockersInteligentes.UI.Operacion
                 ErrorLogService.Registrar(ex, "FrmRegistrarEntrega.btnRegistrar_Click",
                     GestorSesion.Instancia.ActorParaBitacora());
 
-                Mostrar("Ocurrió un error inesperado. Consultá el log de errores.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("Val.ErrorGrave"), true);
             }
             finally
             {
@@ -169,25 +182,30 @@ namespace LockersInteligentes.UI.Operacion
         private void MostrarResultado(ResultadoEntrega resultado)
         {
             OrdenDeEntrega orden = resultado.Orden;
+            GestorIdioma idioma = GestorIdioma.Instancia;
 
             lblResultado.Text =
-                "Orden N° " + orden.Id + Environment.NewLine + Environment.NewLine +
-                "Residente: " + orden.ResidenteAsignado.NombreCompleto() + Environment.NewLine +
-                "Locker:    " + orden.LockerAsignado.Numero +
-                    "  (módulo " + orden.LockerAsignado.GrupoLocker + ")" + Environment.NewLine +
-                "Entregó:   " + orden.RepartidorAsignado.NombreCompleto() + Environment.NewLine +
-                "Fecha:     " + orden.FechaEntrega.Value.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine +
-                "Estado:    " + orden.Estado + Environment.NewLine + Environment.NewLine +
-                "El locker quedó Ocupado. Vence en " +
-                    OrdenDeEntrega.DiasParaRetirar + " días.";
+                string.Format(idioma.Traducir("Res.Orden"), orden.Id) +
+                    Environment.NewLine + Environment.NewLine +
+                idioma.Traducir("Res.Residente") + " " +
+                    orden.ResidenteAsignado.NombreCompleto() + Environment.NewLine +
+                idioma.Traducir("Res.Locker") + " " + orden.LockerAsignado.Numero + " " +
+                    string.Format(idioma.Traducir("Res.Modulo"),
+                                  orden.LockerAsignado.GrupoLocker) + Environment.NewLine +
+                idioma.Traducir("Res.Entrego") + " " +
+                    orden.RepartidorAsignado.NombreCompleto() + Environment.NewLine +
+                idioma.Traducir("Res.Fecha") + " " +
+                    orden.FechaEntrega.Value.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine +
+                idioma.Traducir("Res.Estado") + " " +
+                    idioma.TraducirEnum("EstadoOrden", orden.Estado) +
+                    Environment.NewLine + Environment.NewLine +
+                string.Format(idioma.Traducir("Res.LockerOcupado"),
+                              OrdenDeEntrega.DiasParaRetirar);
 
             lblPinRetiro.Text = resultado.PinRetiro;
-
-            lblAvisoPin.Text = "Comunicale este PIN al residente. No se puede volver a consultar.";
-            lblAvisoPin.ForeColor = Color.Gray;
             grpResultado.Visible = true;
 
-            Mostrar("Entrega registrada correctamente.", false);
+            Mostrar(idioma.Traducir("Msg.EntregaOk"), false);
         }
         private void btnLiberar_Click(object sender, EventArgs e)
         {
@@ -195,13 +213,13 @@ namespace LockersInteligentes.UI.Operacion
 
             if (orden == null)
             {
-                Mostrar("Seleccioná una orden de la lista.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("Val.Orden"), true);
                 return;
             }
 
             if (!orden.ReservaExpirada())
             {
-                Mostrar("Esa reserva sigue vigente. Solo se pueden liberar las vencidas.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("Val.NoVencida"), true);
                 return;
             }
 
@@ -220,8 +238,8 @@ namespace LockersInteligentes.UI.Operacion
             try
             {
                 _sistema.CancelarReservaVencida(orden.Id);
-                Mostrar("Locker " + orden.LockerAsignado.Numero + " liberado.", false);
-                grpResultado.Visible = false;
+                Mostrar(string.Format(GestorIdioma.Instancia.Traducir("Msg.LiberadoOk"),
+                                      orden.LockerAsignado.Numero), false);
                 CargarPendientes();
             }
             catch (Exception ex)
@@ -241,5 +259,34 @@ namespace LockersInteligentes.UI.Operacion
             lblMensaje.Text = mensaje;
         }
 
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmEntrega.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmEntrega.Caption");
+            lblAyuda.Text = idioma.Traducir("FrmEntrega.Ayuda");
+            lblRepartidor.Text = idioma.Traducir("Comun.Repartidor");
+            lblPin.Text = idioma.Traducir("FrmEntrega.lblPin");
+            btnRegistrar.Text = idioma.Traducir("FrmEntrega.btnReg");
+            btnActualizar.Text = idioma.Traducir("Comun.Actualizar");
+            btnLiberar.Text = idioma.Traducir("FrmEntrega.btnLib");
+            grpResultado.Text = idioma.Traducir("FrmEntrega.grpRes");
+            lblAvisoPin.Text = idioma.Traducir("FrmEntrega.AvisoPin");
+
+            CargarPendientes();
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvPendientes.Columns.Contains(nombreColumna))
+                dgvPendientes.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
+        }
     }
 }

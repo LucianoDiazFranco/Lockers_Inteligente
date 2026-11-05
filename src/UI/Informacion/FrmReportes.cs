@@ -1,4 +1,5 @@
-﻿using LockersInteligentes.BLL;
+﻿using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,14 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
 {
-    public partial class FrmReportes : Form
+    public partial class FrmReportes : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _servicio = SistemaLockersFacade.Instancia;
         private IList<Reporte> _reportes = new List<Reporte>();
         public FrmReportes()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
 
         private void FrmReportes_Load(object sender, EventArgs e)
@@ -32,6 +34,7 @@ namespace LockersInteligentes.UI.Informacion
                 dtpHasta.Value = hoy;
 
                 CargarHistorial();
+                ActualizarIdioma();
             }
             catch (Exception ex)
             {
@@ -43,7 +46,7 @@ namespace LockersInteligentes.UI.Informacion
         {
             if (cboEdificio.SelectedValue == null)
             {
-                Mostrar("Seleccioná un edificio.", true);
+                Mostrar(GestorIdioma.Instancia.Traducir("FrmReportes.ValEdif"), true);
                 return;
             }
 
@@ -59,7 +62,8 @@ namespace LockersInteligentes.UI.Informacion
 
                 MostrarReporte(reporte);
                 CargarHistorial();
-                Mostrar("Reporte N° " + reporte.Id + " generado y guardado.", false);
+                Mostrar(string.Format(
+                GestorIdioma.Instancia.Traducir("FrmReportes.OkGenerado"), reporte.Id), false);
             }
             catch (Exception ex)
             {
@@ -75,10 +79,11 @@ namespace LockersInteligentes.UI.Informacion
 
         private void MostrarReporte(Reporte reporte)
         {
-            lblEncabezado.Text = reporte.Edificio.Nombre + "   |   Período " + reporte.Periodo +
-                                 "   |   Generado el " +
-                                 reporte.FechaGeneracion.ToString("dd/MM/yyyy HH:mm");
-
+            lblEncabezado.Text = string.Format(
+                GestorIdioma.Instancia.Traducir("FrmReportes.Encabezado"),
+                reporte.Edificio.Nombre,
+                reporte.Periodo,
+                reporte.FechaGeneracion.ToString("dd/MM/yyyy HH:mm"));
             lblOcupacion.Text = reporte.PorcentajeOcupacionLocker.ToString("0.##") + "%";
             lblPertenencia.Text = reporte.PorcentajePertenenciaLocker.ToString("0.##") + "%";
             lblVencidos.Text = reporte.PaqueteVencido.ToString();
@@ -114,6 +119,14 @@ namespace LockersInteligentes.UI.Informacion
 
                 if (dgvReportes.Columns.Contains("Id"))
                     dgvReportes.Columns["Id"].Visible = false;
+
+                TraducirColumna("Numero", "FrmReportes.colNumero");
+                TraducirColumna("Edificio", "Comun.Edificio");
+                TraducirColumna("Periodo", "Comun.Periodo");
+                TraducirColumna("Generado", "FrmReportes.colGenerado");
+                TraducirColumna("Ocupacion", "FrmReportes.colOcup");
+                TraducirColumna("Vencidos", "FrmReportes.colVenc");
+
             }
             catch (Exception ex)
             {
@@ -151,6 +164,41 @@ namespace LockersInteligentes.UI.Informacion
         private void lblRankRepTitulo_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmReportes.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmReportes.Caption");
+            grpGenerar.Text = idioma.Traducir("FrmReportes.grpGen");
+            lblEdificio.Text = idioma.Traducir("Comun.Edificio");
+            lblDesde.Text = idioma.Traducir("Comun.Desde");
+            lblHasta.Text = idioma.Traducir("Comun.Hasta");
+            btnGenerar.Text = idioma.Traducir("FrmReportes.btnGen");
+            grpResultado.Text = idioma.Traducir("FrmReportes.grpRes");
+            lblOcupacionTitulo.Text = idioma.Traducir("FrmReportes.lblOcup");
+            lblPertenenciaTitulo.Text = idioma.Traducir("FrmReportes.lblPert");
+            lblVencidosTitulo.Text = idioma.Traducir("FrmReportes.lblVenc");
+            lblRankRepTitulo.Text = idioma.Traducir("FrmReportes.lblRankRep");
+            lblRankLockTitulo.Text = idioma.Traducir("FrmReportes.lblRankLoc");
+            lblHistorialTitulo.Text = idioma.Traducir("FrmReportes.lblHist");
+
+            CargarHistorial();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvReportes.Columns.Contains(nombreColumna))
+                dgvReportes.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LockersInteligentes.BLL;
+﻿using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Gestion
 {
-    public partial class FrmResidentes : Form
+    public partial class FrmResidentes : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
 
@@ -18,6 +19,7 @@ namespace LockersInteligentes.UI.Gestion
         public FrmResidentes()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
         private void FrmResidentes_Load(object sender, EventArgs e)
         {
@@ -29,6 +31,7 @@ namespace LockersInteligentes.UI.Gestion
 
                 CargarGrilla();
                 LimpiarCampos();
+                ActualizarIdioma();
             }
             catch (Exception ex)
             {
@@ -68,6 +71,14 @@ namespace LockersInteligentes.UI.Gestion
 
                 if (dgvResidentes.Columns.Contains("Id"))
                     dgvResidentes.Columns["Id"].Visible = false;
+
+                TraducirColumna("Apellido", "Comun.Apellido");
+                TraducirColumna("Nombre", "Comun.Nombre");
+                TraducirColumna("Dni", "Comun.Dni");
+                TraducirColumna("Correo", "Comun.Correo");
+                TraducirColumna("Piso", "Comun.Piso");
+                TraducirColumna("Telefono", "Comun.Telefono");
+                TraducirColumna("Estado", "Comun.Estado");
 
                 PintarInactivos();
             }
@@ -226,6 +237,38 @@ namespace LockersInteligentes.UI.Gestion
         {
             lblMensaje.ForeColor = esError ? Color.Firebrick : Color.SeaGreen;
             lblMensaje.Text = mensaje;
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmResidentes.Caption");
+            lblFiltroEdificio.Text = idioma.Traducir("Comun.Edificio");
+            lblNombre.Text = idioma.Traducir("Comun.Nombre");
+            lblApellido.Text = idioma.Traducir("Comun.Apellido");
+            lblDni.Text = idioma.Traducir("Comun.Dni");
+            lblCorreo.Text = idioma.Traducir("Comun.Correo");
+            lblPiso.Text = idioma.Traducir("Comun.Piso");
+            lblTelefono.Text = idioma.Traducir("Comun.Telefono");
+            btnNuevo.Text = idioma.Traducir("Comun.Nuevo");
+            btnGuardar.Text = idioma.Traducir("Comun.Guardar");
+            btnDesactivar.Text = idioma.Traducir("Comun.DarDeBaja");
+            btnReactivar.Text = idioma.Traducir("Comun.Reactivar");
+
+            CargarGrilla();
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvResidentes.Columns.Contains(nombreColumna))
+                dgvResidentes.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
         }
     }
 }

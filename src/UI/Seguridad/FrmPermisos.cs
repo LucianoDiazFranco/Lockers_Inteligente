@@ -1,6 +1,7 @@
 ﻿using LockersInteligentes.ArqBase.Composite;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.BLL;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,14 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
-    public partial class FrmPermisos : Form
+    public partial class FrmPermisos : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Usuario> _usuarios = new List<Usuario>();
         public FrmPermisos()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
 
         private void FrmPermisos_Load(object sender, EventArgs e)
@@ -46,6 +48,7 @@ namespace LockersInteligentes.UI
             CargarArbol();
             CargarFamiliasDestino();
             CargarAsignados();
+            ActualizarIdioma();
         }
 
         /// <summary>
@@ -347,5 +350,38 @@ namespace LockersInteligentes.UI
             lblMensaje.Text = mensaje;
         }
 
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmPermisos.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmPermisos.Titulo");
+            lblAyuda.Text = idioma.Traducir("FrmPermisos.Ayuda");
+
+            grpComponente.Text = idioma.Traducir("FrmPermisos.grpComp");
+            lblTipo.Text = idioma.Traducir("FrmPermisos.lblTipo");
+            lblNombre.Text = idioma.Traducir("Comun.Nombre");
+            lblDescripcion.Text = idioma.Traducir("FrmPermisos.lblDesc");
+            btnCrear.Text = idioma.Traducir("Comun.Nuevo");
+            btnEditar.Text = idioma.Traducir("FrmPermisos.btnEditar");
+            btnEliminar.Text = idioma.Traducir("Comun.Eliminar");
+
+            grpAnidar.Text = idioma.Traducir("FrmPermisos.grpAnidar");
+            lblFamiliaDestino.Text = idioma.Traducir("FrmPermisos.lblDestino");
+            btnAgregarAFamilia.Text = idioma.Traducir("FrmPermisos.btnAgregar");
+            btnQuitarDeFamilia.Text = idioma.Traducir("FrmPermisos.btnQuitarF");
+
+            grpUsuario.Text = idioma.Traducir("FrmPermisos.grpUsuario");
+            lblUsuario.Text = idioma.Traducir("Comun.Usuario");
+            btnAsignar.Text = idioma.Traducir("FrmPermisos.btnAsignar");
+            btnQuitarDeUsuario.Text = idioma.Traducir("FrmPermisos.btnQuitarU");
+
+            btnActualizar.Text = idioma.Traducir("Comun.Actualizar");
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
     }
 }

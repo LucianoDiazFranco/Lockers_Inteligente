@@ -6,7 +6,7 @@ using LockersInteligentes.ArqBase.Logica;
 
 namespace LockersInteligentes.UI
 {
-    public partial class FrmRegistro : Form
+    public partial class FrmRegistro : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         public string UsuarioCreado { get; private set; }
@@ -14,6 +14,8 @@ namespace LockersInteligentes.UI
         public FrmRegistro()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
+            ActualizarIdioma();
         }
 
         private void btnRegistrar_Click(object sender, EventArgs e)
@@ -68,6 +70,29 @@ namespace LockersInteligentes.UI
         private void txtNombre_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmRegistro.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmRegistro.Titulo");
+            lblSubtitulo.Text = idioma.Traducir("FrmRegistro.Subtitulo");
+            lblNombre.Text = idioma.Traducir("Comun.Nombre");
+            lblApellido.Text = idioma.Traducir("Comun.Apellido");
+            lblCorreo.Text = idioma.Traducir("Comun.Correo");
+            lblNombreUsuario.Text = idioma.Traducir("FrmRegistro.lblUsuario");
+            lblPassword.Text = idioma.Traducir("Comun.Contrasenia");
+            lblPasswordRepetida.Text = idioma.Traducir("FrmRegistro.lblRepetir");
+            lblAyuda.Text = idioma.Traducir("FrmRegistro.Ayuda");
+            btnRegistrar.Text = idioma.Traducir("FrmRegistro.btnCrear");
+            btnCancelar.Text = idioma.Traducir("Comun.Cancelar");
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
         }
     }
 }

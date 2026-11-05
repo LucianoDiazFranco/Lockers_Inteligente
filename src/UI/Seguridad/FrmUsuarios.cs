@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.BLL;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
-    public partial class FrmUsuarios : Form
+    public partial class FrmUsuarios : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         private IList<Usuario> _usuarios = new List<Usuario>();
@@ -18,6 +19,7 @@ namespace LockersInteligentes.UI
         public FrmUsuarios()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
         private void FrmUsuarios_Load(object sender, EventArgs e)
         {
@@ -29,6 +31,7 @@ namespace LockersInteligentes.UI
 
                 CargarGrilla();
                 LimpiarCampos();
+                ActualizarIdioma();
             }
             catch (Exception ex)
             {
@@ -38,6 +41,7 @@ namespace LockersInteligentes.UI
         private void CargarGrilla()
         {
             _usuarios = _sistema.ListarUsuarios();
+            GestorIdioma idioma = GestorIdioma.Instancia;
 
             dgvUsuarios.DataSource = _usuarios
                 .Select(u => new
@@ -53,6 +57,11 @@ namespace LockersInteligentes.UI
 
             if (dgvUsuarios.Columns.Contains("Id"))
                 dgvUsuarios.Columns["Id"].Visible = false;
+
+            TraducirColumna("Usuario", "Comun.Usuario");
+            TraducirColumna("Nombre", "FrmUsuarios.colNombre");
+            TraducirColumna("Rol", "Comun.Rol");
+            TraducirColumna("Activo", "Comun.Activo");
         }
 
         private void dgvUsuarios_SelectionChanged(object sender, EventArgs e)
@@ -164,6 +173,35 @@ namespace LockersInteligentes.UI
         private void dgvUsuarios_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmUsuarios.Caption");
+            lblNombreUsuario.Text = idioma.Traducir("Comun.Usuario");
+            lblNombre.Text = idioma.Traducir("Comun.Nombre");
+            lblApellido.Text = idioma.Traducir("Comun.Apellido");
+            lblRol.Text = idioma.Traducir("Comun.Rol");
+            lblPassword.Text = idioma.Traducir("Comun.Contrasenia");
+            lblAyudaPassword.Text = idioma.Traducir("FrmUsuarios.Ayuda");
+            btnNuevo.Text = idioma.Traducir("Comun.Nuevo");
+            btnGuardar.Text = idioma.Traducir("Comun.Guardar");
+            btnDesactivar.Text = idioma.Traducir("FrmUsuarios.btnDesact");
+
+            CargarGrilla();
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvUsuarios.Columns.Contains(nombreColumna))
+                dgvUsuarios.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
         }
     }
 }

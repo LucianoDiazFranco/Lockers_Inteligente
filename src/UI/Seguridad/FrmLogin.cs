@@ -3,18 +3,11 @@ using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.BLL;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LockersInteligentes.UI
 {
-    public partial class FrmLogin : Form
+    public partial class FrmLogin : Form, IObservadorIdioma
     {
         private readonly SistemaLockersFacade _sistema = SistemaLockersFacade.Instancia;
         public Usuario UsuarioAutenticado { get; private set; }
@@ -22,6 +15,8 @@ namespace LockersInteligentes.UI
         public FrmLogin()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
+            ActualizarIdioma();
         }
 
         private void btnIngresar_Click(object sender, EventArgs e)
@@ -86,6 +81,31 @@ namespace LockersInteligentes.UI
         private void lblSubtitulo_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmLogin.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmLogin.Titulo");
+            lblSubtitulo.Text = idioma.Traducir("FrmLogin.Subtitulo");
+            lblUsuario.Text = idioma.Traducir("Comun.Usuario");
+            lblContrasenia.Text = idioma.Traducir("Comun.Contrasenia");
+            chkMostrarContrasenia.Text = idioma.Traducir("FrmLogin.chkMostrar");
+            btnIngresar.Text = idioma.Traducir("FrmLogin.btnIngresar");
+            btnCancelar.Text = idioma.Traducir("Comun.Cancelar");
+            lnkRegistrarse.Text = idioma.Traducir("FrmLogin.lnkRegistrar");
+        }
+        /// <summary>
+        /// Se desuscribe al cerrarse. Es imprescindible: si no, el GestorIdioma
+        /// conserva una referencia a una ventana destruida y al cambiar el idioma
+        /// intentaría actualizar un formulario que ya no existe.
+        /// </summary>
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace LockersInteligentes.ArqBase.DataAccess
 {
@@ -14,6 +10,8 @@ namespace LockersInteligentes.ArqBase.DataAccess
         private RepositorioRol _roles;
         private RepositorioHistorial _historial;
         private RepositorioComponente _componentes;
+        private RepositorioIdioma _idiomas;
+        private RepositorioTraduccion _traducciones;
 
         private RepositorioFactoryArq()
         {
@@ -64,6 +62,27 @@ namespace LockersInteligentes.ArqBase.DataAccess
                     _componentes = new RepositorioComponente();
 
                 return _componentes;
+            }
+        }
+        public RepositorioIdioma Idiomas
+        {
+            get
+            {
+                if (_idiomas == null)
+                    _idiomas = new RepositorioIdioma();
+
+                return _idiomas;
+            }
+        }
+
+        public RepositorioTraduccion Traducciones
+        {
+            get
+            {
+                if (_traducciones == null)
+                    _traducciones = new RepositorioTraduccion();
+
+                return _traducciones;
             }
         }
     }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL;
+using LockersInteligentes.Dominio.Entidades;
+using LockersInteligentes.Dominio.Enums;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LockersInteligentes.BLL;
-using LockersInteligentes.Dominio.Entidades;
-using LockersInteligentes.Dominio.Enums;
 
 namespace LockersInteligentes.UI
 {
@@ -14,7 +15,7 @@ namespace LockersInteligentes.UI
     /// Los controles fijos están en el Designer; los casilleros se crean por código
     /// porque su cantidad depende de cuántos lockers tenga el edificio.
     /// </summary>
-    public partial class FrmEstadoLockers : Form
+    public partial class FrmEstadoLockers : Form, IObservadorIdioma
     {
         private static readonly Color ColorLibre = Color.FromArgb(46, 160, 67);
         private static readonly Color ColorReservado = Color.FromArgb(47, 109, 199);
@@ -28,6 +29,7 @@ namespace LockersInteligentes.UI
         public FrmEstadoLockers()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
 
         private void FrmEstadoLockers_Load(object sender, EventArgs e)
@@ -38,8 +40,7 @@ namespace LockersInteligentes.UI
                 cboEdificio.ValueMember = "Id";
                 cboEdificio.DataSource = _sistema.EdificiosParaPanel();
 
-                MostrarLeyenda();
-                Recargar();
+                ActualizarIdioma();
             }
             catch (Exception ex)
             {
@@ -68,8 +69,13 @@ namespace LockersInteligentes.UI
             if (cboEdificio.SelectedValue == null)
                 return;
 
-            List<string> sectores = new List<string> { "(todos)" };
-            sectores.AddRange(_sistema.SectoresDeEdificio(Convert.ToInt32(cboEdificio.SelectedValue)));
+            List<string> sectores = new List<string>
+            {
+                GestorIdioma.Instancia.Traducir("Comun.Todos")
+            };
+
+            sectores.AddRange(_sistema.SectoresDeEdificio(
+                Convert.ToInt32(cboEdificio.SelectedValue)));
 
             cboSector.DataSource = sectores;
         }
@@ -95,15 +101,15 @@ namespace LockersInteligentes.UI
         private void MostrarResumen()
         {
             ResumenLockers r = _sistema.ResumirLockers(_vista);
+            GestorIdioma idioma = GestorIdioma.Instancia;
 
-            lblResumen.Text =
-                r.Total + " lockers   |   " +
-                r.Libres + " libres   |   " +
-                r.Reservados + " reservados   |   " +
-                r.Ocupados + " ocupados   |   " +
-                r.FueraDeServicio + " fuera de servicio   |   " +
-                "Ocupación: " + r.PorcentajeOcupacion() + "%" +
-                (r.Vencidos > 0 ? "   |   " + r.Vencidos + " vencidos" : "");
+            lblResumen.Text = string.Format(idioma.Traducir("FrmEstado.Resumen"),
+                r.Total, r.Libres, r.Reservados, r.Ocupados,
+                r.FueraDeServicio, r.PorcentajeOcupacion());
+
+            if (r.Vencidos > 0)
+                lblResumen.Text += string.Format(
+                    idioma.Traducir("FrmEstado.Vencidos"), r.Vencidos);
         }
 
         /// <summary>Redibuja los casilleros sin volver a consultar la base.</summary>
@@ -111,12 +117,13 @@ namespace LockersInteligentes.UI
         {
             panelLockers.SuspendLayout();
             panelLockers.Controls.Clear();
-
-            string sector = cboSector.SelectedItem as string;
             IEnumerable<EstadoLockerVista> filtrada = _vista;
 
-            if (!string.IsNullOrEmpty(sector) && sector != "(todos)")
+            if (cboSector.SelectedIndex > 0)
+            {
+                string sector = cboSector.SelectedItem as string;
                 filtrada = filtrada.Where(v => (v.Locker.GrupoLocker ?? "(sin sector)") == sector);
+            }
 
             foreach (EstadoLockerVista item in filtrada.OrderBy(v => v.Locker.Numero))
                 panelLockers.Controls.Add(CrearCasillero(item));
@@ -161,7 +168,7 @@ namespace LockersInteligentes.UI
             luz.Location = new Point((puerta.Width - luz.Width) / 2 - 1, 58);
 
             Label tamanio = new Label();
-            tamanio.Text = item.Locker.Tamanio.ToString();
+            tamanio.Text = GestorIdioma.Instancia.TraducirEnum("Tamanio", item.Locker.Tamanio);
             tamanio.Font = new Font("Segoe UI", 7.5F);
             tamanio.ForeColor = Color.FromArgb(70, 76, 84);
             tamanio.TextAlign = ContentAlignment.MiddleCenter;
@@ -211,8 +218,11 @@ namespace LockersInteligentes.UI
         private void MostrarDetalle(EstadoLockerVista item)
         {
             Locker l = item.Locker;
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
             string encabezado = "Locker " + l.Numero + " (" + l.GrupoLocker + ")  -  " +
-                                l.Tamanio + "  -  " + l.Estado;
+                                idioma.TraducirEnum("Tamanio", l.Tamanio) + "  -  " +
+                                idioma.TraducirEnum("EstadoLocker", l.Estado);
 
             if (item.OrdenActiva == null)
             {
@@ -222,46 +232,69 @@ namespace LockersInteligentes.UI
             }
 
             OrdenDeEntrega o = item.OrdenActiva;
+
             string texto = encabezado + Environment.NewLine +
-                           "Orden N° " + o.Id + "  -  " + o.ResidenteAsignado.NombreCompleto() +
-                           "  (" + o.ResidenteAsignado.Piso + ")  -  paquete " + o.TamanioPaquete;
+                string.Format(idioma.Traducir("Det.Orden"),
+                    o.Id,
+                    o.ResidenteAsignado.NombreCompleto(),
+                    o.ResidenteAsignado.Piso,
+                    idioma.TraducirEnum("Tamanio", o.TamanioPaquete));
 
             if (o.Estado == EstadoOrden.Reservada)
             {
-                texto += Environment.NewLine + "Reservado hace " +
-                         Math.Round(o.HorasDesdeReserva()) + " h. " +
-                         (item.ReservaExpirada
-                            ? "El PIN de apertura ya venció: conviene liberar el locker."
-                            : "Esperando al repartidor.");
+                texto += Environment.NewLine +
+                    string.Format(idioma.Traducir("Det.Reservado"),
+                                  Math.Round(o.HorasDesdeReserva())) +
+                    (item.ReservaExpirada
+                        ? idioma.Traducir("Det.PinVencido")
+                        : idioma.Traducir("Det.Esperando"));
             }
             else
             {
                 int? dias = o.DiasRestantesParaRetiro();
-                texto += Environment.NewLine + "Entregado el " +
-                         o.FechaEntrega.Value.ToString("dd/MM/yyyy HH:mm") + ". " +
-                         (item.Vencido
-                            ? "VENCIDO hace " + Math.Abs(dias.Value) + " días."
-                            : "Quedan " + dias + " días para el retiro.");
+
+                texto += Environment.NewLine +
+                    string.Format(idioma.Traducir("Det.EntregadoEl"),
+                                  o.FechaEntrega.Value.ToString("dd/MM/yyyy HH:mm")) +
+                    (item.Vencido
+                        ? string.Format(idioma.Traducir("Det.VencidoDias"), Math.Abs(dias.Value))
+                        : string.Format(idioma.Traducir("Det.QuedanDias"), dias));
             }
 
-            lblDetalle.ForeColor = (item.Vencido || item.ReservaExpirada) ? Color.Firebrick : Color.Black;
+            lblDetalle.ForeColor = (item.Vencido || item.ReservaExpirada)
+                ? Color.Firebrick : Color.Black;
             lblDetalle.Text = texto;
         }
 
         private void MostrarLeyenda()
         {
-            lblLeyenda.Text = "Verde: libre    Azul: reservado, esperando repartidor    " +
-                              "Rojo: ocupado, esperando retiro    Ámbar: vencido (más de " +
-                              OrdenDeEntrega.DiasParaRetirar + " días)    Gris: fuera de servicio";
+            lblLeyenda.Text = string.Format(
+                GestorIdioma.Instancia.Traducir("FrmEstado.Leyenda"),
+                OrdenDeEntrega.DiasParaRetirar);
         }
         public void Refrescar()
         {
             Recargar();
         }
 
-        private void panelSuperior_Paint(object sender, PaintEventArgs e)
+        public void ActualizarIdioma()
         {
+            GestorIdioma idioma = GestorIdioma.Instancia;
 
+            Text = idioma.Traducir("FrmEstado.Caption");
+            lblEdificio.Text = idioma.Traducir("Comun.Edificio");
+            lblSector.Text = idioma.Traducir("Comun.Sector");
+            btnActualizar.Text = idioma.Traducir("Comun.Actualizar");
+            lblDetalle.Text = idioma.Traducir("FrmEstado.Detalle");
+
+            MostrarLeyenda();
+            Recargar();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
         }
     }
 }

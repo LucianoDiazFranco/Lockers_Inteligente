@@ -13,6 +13,8 @@ namespace LockersInteligentes.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            // Carga el idioma predeterminado antes de mostrar la primera pantalla.
+            GestorIdioma.Instancia.Inicializar();
 
             Application.ThreadException += (s, args) =>
             {

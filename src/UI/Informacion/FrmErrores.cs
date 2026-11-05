@@ -12,17 +12,18 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
 {
-    public partial class FrmErrores : Form
+    public partial class FrmErrores : Form, IObservadorIdioma
     {
         private IList<RegistroError> _errores = new List<RegistroError>();
         public FrmErrores()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
         private void FrmErrores_Load(object sender, EventArgs e)
         {
-            lblRuta.Text = "Archivo: " + ErrorLogService.RutaArchivo;
             Cargar();
+            ActualizarIdioma();
         }
 
         private void Cargar()
@@ -50,12 +51,19 @@ namespace LockersInteligentes.UI.Informacion
                     dgvErrores.Columns["Mensaje"].AutoSizeMode =
                         DataGridViewAutoSizeColumnMode.Fill;
 
+                TraducirColumna("Fecha", "FrmErrores.colFecha");
+                TraducirColumna("Usuario", "Comun.Usuario");
+                TraducirColumna("Tipo", "Comun.Tipo");
+                TraducirColumna("Origen", "FrmErrores.colOrigen");
+                TraducirColumna("Mensaje", "FrmErrores.colMensaje");
+
                 txtDetalle.Clear();
 
+                GestorIdioma idioma = GestorIdioma.Instancia;
                 lblMensaje.ForeColor = Color.DimGray;
                 lblMensaje.Text = _errores.Count == 0
-                    ? "No hay errores registrados."
-                    : _errores.Count + " error(es) registrado(s).";
+                    ? idioma.Traducir("FrmErrores.SinErrores")
+                    : string.Format(idioma.Traducir("FrmErrores.Cantidad"), _errores.Count);
             }
             catch (Exception ex)
             {
@@ -231,6 +239,34 @@ namespace LockersInteligentes.UI.Informacion
                 "No se encontró 01_Esquema.sql. Debería estar en src\\DAL\\db.");
         }
 
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
 
+            Text = idioma.Traducir("FrmErrores.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmErrores.Caption");
+            lblRuta.Text = string.Format(
+                idioma.Traducir("FrmErrores.lblRuta"), ErrorLogService.RutaArchivo);
+            lblDetalleTitulo.Text = idioma.Traducir("FrmErrores.lblDetalle");
+            btnActualizar.Text = idioma.Traducir("Comun.Actualizar");
+            btnAbrirCarpeta.Text = idioma.Traducir("FrmErrores.btnCarpeta");
+            btnLimpiar.Text = idioma.Traducir("FrmErrores.btnVaciar");
+            btnBackup.Text = idioma.Traducir("FrmErrores.btnBackup");
+
+            Cargar();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvErrores.Columns.Contains(nombreColumna))
+                dgvErrores.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
+        }
     }
 }

@@ -43,7 +43,6 @@
             panelSuperior.Name = "panelSuperior";
             panelSuperior.Size = new System.Drawing.Size(1224, 78);
             panelSuperior.TabIndex = 0;
-            panelSuperior.Paint += panelSuperior_Paint;
             // 
             // lblEdificio
             // 

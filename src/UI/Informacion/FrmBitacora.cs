@@ -1,5 +1,6 @@
 ﻿using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
+using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.BLL;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Windows.Forms;
 
 namespace LockersInteligentes.UI.Informacion
 {
-    public partial class FrmBitacora : Form
+    public partial class FrmBitacora : Form, IObservadorIdioma
     {
         private const string TodasLasOperaciones = "(todas)";
 
@@ -18,15 +19,18 @@ namespace LockersInteligentes.UI.Informacion
         public FrmBitacora()
         {
             InitializeComponent();
+            GestorIdioma.Instancia.Suscribir(this);
         }
         private void FrmBitacora_Load(object sender, EventArgs e)
         {
-            // El combo se arma con los valores del enum más una opción neutra,
-            // así no puede quedar desincronizado del dominio.
             List<object> tipos = new List<object> { TodasLasOperaciones };
 
             foreach (TipoOperacion tipo in Enum.GetValues(typeof(TipoOperacion)))
-                tipos.Add(tipo);
+                tipos.Add(new ItemTraducido
+                {
+                    Valor = tipo,
+                    Texto = GestorIdioma.Instancia.TraducirEnum("TipoOperacion", tipo)
+                });
 
             cboTipo.DataSource = tipos;
 
@@ -34,6 +38,7 @@ namespace LockersInteligentes.UI.Informacion
             dtpHasta.Value = DateTime.Today;
 
             Buscar();
+            ActualizarIdioma();
         }
 
         private void chkDesde_CheckedChanged(object sender, EventArgs e)
@@ -65,8 +70,10 @@ namespace LockersInteligentes.UI.Informacion
 
                 TipoOperacion? tipo = null;
 
-                if (cboTipo.SelectedItem is TipoOperacion)
-                    tipo = (TipoOperacion)cboTipo.SelectedItem;
+                ItemTraducido seleccion = cboTipo.SelectedItem as ItemTraducido;
+
+                if (seleccion != null)
+                    tipo = (TipoOperacion)seleccion.Valor;
 
                 IList<Historial> registros = _servicio.BuscarBitacora(desde, hasta, txtActor.Text, tipo);
 
@@ -76,7 +83,8 @@ namespace LockersInteligentes.UI.Informacion
                         Numero = h.Id,
                         Fecha = h.FechaOperacion.ToString("dd/MM/yyyy HH:mm:ss"),
                         Usuario = h.Actor,
-                        Operacion = h.TipoDeOperacion.ToString(),
+                        Operacion = GestorIdioma.Instancia.TraducirEnum(
+                            "TipoOperacion", h.TipoDeOperacion),
                         Locker = h.NumeroLocker.HasValue
                             ? h.NumeroLocker.Value.ToString() : "",
                         Orden = h.IdOrdenDeEntrega.HasValue
@@ -86,9 +94,18 @@ namespace LockersInteligentes.UI.Informacion
                     .ToList();
 
                 AjustarColumnas();
-                PintarPorTipo();
+                PintarPorTipo(registros);
 
-                lblResumen.Text = registros.Count + " registro(s) encontrado(s).";
+                TraducirColumna("Numero", "FrmBitacora.colNumero");
+                TraducirColumna("Fecha", "Comun.Fecha");
+                TraducirColumna("Usuario", "Comun.Usuario");
+                TraducirColumna("Operacion", "FrmBitacora.colOper");
+                TraducirColumna("Locker", "Comun.Locker");
+                TraducirColumna("Orden", "Comun.Orden");
+                TraducirColumna("Detalle", "Comun.Detalle");
+
+                lblResumen.Text = string.Format(
+                GestorIdioma.Instancia.Traducir("FrmBitacora.Resumen"), registros.Count);
             }
             catch (Exception ex)
             {
@@ -108,29 +125,26 @@ namespace LockersInteligentes.UI.Informacion
         }
 
         /// <summary>Color por tipo de operación, para poder barrer la lista de un vistazo.</summary>
-        private void PintarPorTipo()
+        private void PintarPorTipo(IList<Historial> registros)
         {
-            foreach (DataGridViewRow fila in dgvHistorial.Rows)
+            for (int i = 0; i < dgvHistorial.Rows.Count && i < registros.Count; i++)
             {
-                if (fila.Cells["Operacion"].Value == null)
-                    continue;
-
-                switch (fila.Cells["Operacion"].Value.ToString())
+                switch (registros[i].TipoDeOperacion)
                 {
-                    case "Login":
-                        fila.DefaultCellStyle.ForeColor = Color.SteelBlue;
+                    case TipoOperacion.Login:
+                        dgvHistorial.Rows[i].DefaultCellStyle.ForeColor = Color.SteelBlue;
                         break;
-                    case "Reserva":
-                        fila.DefaultCellStyle.ForeColor = Color.DarkSlateBlue;
+                    case TipoOperacion.Reserva:
+                        dgvHistorial.Rows[i].DefaultCellStyle.ForeColor = Color.DarkSlateBlue;
                         break;
-                    case "Entrega":
-                        fila.DefaultCellStyle.ForeColor = Color.SeaGreen;
+                    case TipoOperacion.Entrega:
+                        dgvHistorial.Rows[i].DefaultCellStyle.ForeColor = Color.SeaGreen;
                         break;
-                    case "Retiro":
-                        fila.DefaultCellStyle.ForeColor = Color.DarkGreen;
+                    case TipoOperacion.Retiro:
+                        dgvHistorial.Rows[i].DefaultCellStyle.ForeColor = Color.DarkGreen;
                         break;
-                    case "Baja":
-                        fila.DefaultCellStyle.ForeColor = Color.Firebrick;
+                    case TipoOperacion.Baja:
+                        dgvHistorial.Rows[i].DefaultCellStyle.ForeColor = Color.Firebrick;
                         break;
                 }
             }
@@ -144,6 +158,52 @@ namespace LockersInteligentes.UI.Informacion
             cboTipo.SelectedIndex = 0;
             lblResumen.ForeColor = Color.DimGray;
             Buscar();
+        }
+
+        public void ActualizarIdioma()
+        {
+            GestorIdioma idioma = GestorIdioma.Instancia;
+
+            Text = idioma.Traducir("FrmBitacora.Caption");
+            lblTitulo.Text = idioma.Traducir("FrmBitacora.Titulo");
+            grpFiltros.Text = idioma.Traducir("FrmBitacora.grpFiltros");
+            chkDesde.Text = idioma.Traducir("Comun.Desde");
+            chkHasta.Text = idioma.Traducir("Comun.Hasta");
+            lblActor.Text = idioma.Traducir("Comun.Usuario");
+            lblTipo.Text = idioma.Traducir("FrmBitacora.lblOper");
+            btnBuscar.Text = idioma.Traducir("Comun.Buscar");
+            btnLimpiar.Text = idioma.Traducir("Comun.Limpiar");
+
+            // El combo se rearma porque sus textos vienen traducidos.
+            int seleccion = cboTipo.SelectedIndex;
+
+            List<object> tipos = new List<object> { idioma.Traducir("Comun.Todos") };
+
+            foreach (TipoOperacion tipo in Enum.GetValues(typeof(TipoOperacion)))
+                tipos.Add(new ItemTraducido
+                {
+                    Valor = tipo,
+                    Texto = idioma.TraducirEnum("TipoOperacion", tipo)
+                });
+
+            cboTipo.DataSource = tipos;
+
+            if (seleccion >= 0 && seleccion < cboTipo.Items.Count)
+                cboTipo.SelectedIndex = seleccion;
+
+            Buscar();
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GestorIdioma.Instancia.Desuscribir(this);
+            base.OnFormClosed(e);
+        }
+
+        private void TraducirColumna(string nombreColumna, string clave)
+        {
+            if (dgvHistorial.Columns.Contains(nombreColumna))
+                dgvHistorial.Columns[nombreColumna].HeaderText =
+                    GestorIdioma.Instancia.Traducir(clave);
         }
     }
 }
