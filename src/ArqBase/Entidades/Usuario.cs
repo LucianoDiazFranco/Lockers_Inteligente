@@ -17,6 +17,8 @@ namespace LockersInteligentes.ArqBase.Entidades
         public Idioma IdiomaPreferido { get; set; }
         public bool Activo { get; set; }
 
+        public string DVH { get; set; }
+
         public bool EsAdministrador()
         {
             return Rol != null && Rol.EsAdministrador();

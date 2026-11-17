@@ -2,6 +2,7 @@
 using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -268,5 +269,154 @@ namespace LockersInteligentes.UI.Informacion
                 dgvErrores.Columns[nombreColumna].HeaderText =
                     GestorIdioma.Instancia.Traducir(clave);
         }
+
+        private void btnRestore_Click(object sender, EventArgs e)
+        {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.EjecutarBackup);
+
+            using (OpenFileDialog dialogo = new OpenFileDialog())
+            {
+                dialogo.Filter = "Script SQL (*.sql)|*.sql";
+                dialogo.Title = "Seleccionar backup a restaurar";
+
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string aviso =
+                    "ATENCIÓN: esta operación BORRA la base actual y la reemplaza " +
+                    "por el contenido del backup." + Environment.NewLine + Environment.NewLine +
+                    "Archivo: " + dialogo.FileName + Environment.NewLine + Environment.NewLine +
+                    "Se va a generar una copia de seguridad del estado actual antes " +
+                    "de continuar." + Environment.NewLine + Environment.NewLine +
+                    "Al terminar vas a tener que volver a iniciar sesión." +
+                    Environment.NewLine + Environment.NewLine +
+                    "¿Continuar?";
+
+                if (MessageBox.Show(aviso, "Confirmar restauración",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+
+                btnRestore.Enabled = false;
+                Cursor = Cursors.WaitCursor;
+
+                try
+                {
+                    string copia = Path.Combine(
+                        Path.GetDirectoryName(ErrorLogService.RutaArchivo),
+                        "antes_de_restaurar_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".sql");
+
+                    BackupService.Generar(Conexion.Cadena, UbicarEsquema(), copia);
+
+                    int lotes = BackupService.Restaurar(Conexion.Cadena, dialogo.FileName);
+
+                    MessageBox.Show(
+                        "Base restaurada correctamente." + Environment.NewLine + Environment.NewLine +
+                        "Lotes ejecutados: " + lotes + Environment.NewLine +
+                        "Copia previa guardada en: " + copia + Environment.NewLine + Environment.NewLine +
+                        "La aplicación se va a cerrar. Volvé a abrirla para usar la base restaurada.",
+                        "Restauración", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Se cierra porque la sesión y los permisos en memoria
+                    // corresponden a la base anterior, que ya no existe.
+                    Application.Exit();
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogService.Registrar(ex, "FrmErrores.btnRestore_Click",
+                        GestorSesion.Instancia.ActorParaBitacora());
+
+                    lblMensaje.ForeColor = Color.Firebrick;
+                    lblMensaje.Text = "No se pudo restaurar: " + ex.Message;
+                }
+                finally
+                {
+                    btnRestore.Enabled = true;
+                    Cursor = Cursors.Default;
+                }
+            }
+        }
+
+        private void btnVerificarIntegridad_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IList<Usuario> alterados = SistemaLockersFacade.Instancia.VerificarIntegridad();
+
+                if (alterados.Count == 0)
+                {
+                    lblMensaje.ForeColor = Color.SeaGreen;
+                    lblMensaje.Text = "Integridad correcta.";
+
+                    MessageBox.Show(
+                        "Todos los usuarios tienen su dígito verificador correcto." +
+                        Environment.NewLine + Environment.NewLine +
+                        "Ningún registro fue modificado fuera del sistema.",
+                        "Verificación de integridad",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string detalle = string.Empty;
+
+                foreach (Usuario usuario in alterados)
+                    detalle += "  - " + usuario.NombreUsuario +
+                               " (" + usuario.NombreCompleto() + ")" + Environment.NewLine;
+
+                lblMensaje.ForeColor = Color.Firebrick;
+                lblMensaje.Text = alterados.Count + " registro(s) con integridad comprometida.";
+
+                MessageBox.Show(
+                    "Se detectaron " + alterados.Count + " usuario(s) cuyo dígito " +
+                    "verificador no coincide:" + Environment.NewLine + Environment.NewLine +
+                    detalle + Environment.NewLine +
+                    "Esto significa que esos registros fueron modificados " +
+                    "directamente en la base de datos, sin pasar por el sistema." +
+                    Environment.NewLine + Environment.NewLine +
+                    "Si el cambio fue intencional, usá 'Recalcular dígitos'.",
+                    "Integridad comprometida",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogService.Registrar(ex, "FrmErrores.btnVerificarIntegridad_Click",
+                    GestorSesion.Instancia.ActorParaBitacora());
+
+                lblMensaje.ForeColor = Color.Firebrick;
+                lblMensaje.Text = ex.Message;
+            }
+        }
+
+        private void btnRecalcularDvh_Click(object sender, EventArgs e)
+        {
+            string aviso =
+                "Esta operación recalcula el dígito verificador de todos los usuarios, " +
+                "tomando como válido el contenido actual de la base." +
+                Environment.NewLine + Environment.NewLine +
+                "Si había registros manipulados, pasan a considerarse correctos y " +
+                "se pierde esa evidencia." + Environment.NewLine + Environment.NewLine +
+                "¿Continuar?";
+
+            if (MessageBox.Show(aviso, "Recalcular dígitos",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            try
+            {
+                int actualizados = SistemaLockersFacade.Instancia.RecalcularDigitos();
+
+                lblMensaje.ForeColor = Color.SeaGreen;
+                lblMensaje.Text = "Dígitos recalculados: " + actualizados + " usuario(s).";
+            }
+            catch (Exception ex)
+            {
+                ErrorLogService.Registrar(ex, "FrmErrores.btnRecalcularDvh_Click",
+                    GestorSesion.Instancia.ActorParaBitacora());
+
+                lblMensaje.ForeColor = Color.Firebrick;
+                lblMensaje.Text = ex.Message;
+            }
+        }
+
+
     }
 }

@@ -347,5 +347,16 @@ namespace LockersInteligentes.BLL
         {
             return _reportes.Generar(idEdificio, desde, hasta);
         }
+
+        public IList<Usuario> VerificarIntegridad()
+        {
+            return _usuarios.VerificarIntegridad();
+        }
+
+        public int RecalcularDigitos()
+        {
+            return _usuarios.RecalcularDigitos();
+        }
+
     }
 }

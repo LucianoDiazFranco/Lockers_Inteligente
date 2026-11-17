@@ -24,6 +24,9 @@
             btnAbrirCarpeta = new System.Windows.Forms.Button();
             lblMensaje = new System.Windows.Forms.Label();
             btnBackup = new System.Windows.Forms.Button();
+            btnRestore = new System.Windows.Forms.Button();
+            btnVerificarIntegridad = new System.Windows.Forms.Button();
+            btnRecalcularDvh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dgvErrores).BeginInit();
             SuspendLayout();
             // 
@@ -90,7 +93,7 @@
             btnActualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnActualizar.Location = new System.Drawing.Point(20, 568);
             btnActualizar.Name = "btnActualizar";
-            btnActualizar.Size = new System.Drawing.Size(120, 32);
+            btnActualizar.Size = new System.Drawing.Size(160, 32);
             btnActualizar.TabIndex = 3;
             btnActualizar.Text = "Actualizar";
             btnActualizar.UseVisualStyleBackColor = false;
@@ -114,7 +117,7 @@
             btnAbrirCarpeta.BackColor = System.Drawing.Color.CornflowerBlue;
             btnAbrirCarpeta.FlatAppearance.BorderSize = 2;
             btnAbrirCarpeta.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnAbrirCarpeta.Location = new System.Drawing.Point(152, 568);
+            btnAbrirCarpeta.Location = new System.Drawing.Point(20, 607);
             btnAbrirCarpeta.Name = "btnAbrirCarpeta";
             btnAbrirCarpeta.Size = new System.Drawing.Size(160, 32);
             btnAbrirCarpeta.TabIndex = 4;
@@ -124,9 +127,9 @@
             // 
             // lblMensaje
             // 
-            lblMensaje.Location = new System.Drawing.Point(536, 574);
+            lblMensaje.Location = new System.Drawing.Point(414, 574);
             lblMensaje.Name = "lblMensaje";
-            lblMensaje.Size = new System.Drawing.Size(210, 24);
+            lblMensaje.Size = new System.Drawing.Size(180, 24);
             lblMensaje.TabIndex = 6;
             // 
             // btnBackup
@@ -134,7 +137,7 @@
             btnBackup.BackColor = System.Drawing.Color.CornflowerBlue;
             btnBackup.FlatAppearance.BorderSize = 2;
             btnBackup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnBackup.Location = new System.Drawing.Point(324, 568);
+            btnBackup.Location = new System.Drawing.Point(195, 568);
             btnBackup.Name = "btnBackup";
             btnBackup.Size = new System.Drawing.Size(200, 32);
             btnBackup.TabIndex = 7;
@@ -142,10 +145,49 @@
             btnBackup.UseVisualStyleBackColor = false;
             btnBackup.Click += btnBackup_Click;
             // 
+            // btnRestore
+            // 
+            btnRestore.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnRestore.FlatAppearance.BorderSize = 2;
+            btnRestore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRestore.Location = new System.Drawing.Point(195, 606);
+            btnRestore.Name = "btnRestore";
+            btnRestore.Size = new System.Drawing.Size(200, 34);
+            btnRestore.TabIndex = 8;
+            btnRestore.Text = "Restaurar desde un backup";
+            btnRestore.UseVisualStyleBackColor = false;
+            btnRestore.Click += btnRestore_Click;
+            // 
+            // btnVerificarIntegridad
+            // 
+            btnVerificarIntegridad.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnVerificarIntegridad.FlatAppearance.BorderSize = 2;
+            btnVerificarIntegridad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnVerificarIntegridad.Location = new System.Drawing.Point(600, 568);
+            btnVerificarIntegridad.Name = "btnVerificarIntegridad";
+            btnVerificarIntegridad.Size = new System.Drawing.Size(154, 32);
+            btnVerificarIntegridad.TabIndex = 9;
+            btnVerificarIntegridad.Text = "Verificar integridad";
+            btnVerificarIntegridad.UseVisualStyleBackColor = false;
+            btnVerificarIntegridad.Click += btnVerificarIntegridad_Click;
+            // 
+            // btnRecalcularDvh
+            // 
+            btnRecalcularDvh.BackColor = System.Drawing.Color.CornflowerBlue;
+            btnRecalcularDvh.FlatAppearance.BorderSize = 2;
+            btnRecalcularDvh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRecalcularDvh.Location = new System.Drawing.Point(600, 606);
+            btnRecalcularDvh.Name = "btnRecalcularDvh";
+            btnRecalcularDvh.Size = new System.Drawing.Size(154, 32);
+            btnRecalcularDvh.TabIndex = 10;
+            btnRecalcularDvh.Text = "Recalcular dígitos";
+            btnRecalcularDvh.UseVisualStyleBackColor = false;
+            btnRecalcularDvh.Click += btnRecalcularDvh_Click;
+            // 
             // FrmErrores
             // 
             BackColor = System.Drawing.Color.LightSkyBlue;
-            ClientSize = new System.Drawing.Size(904, 616);
+            ClientSize = new System.Drawing.Size(967, 746);
             Controls.Add(lblTitulo);
             Controls.Add(lblRuta);
             Controls.Add(dgvErrores);
@@ -156,6 +198,9 @@
             Controls.Add(btnLimpiar);
             Controls.Add(lblMensaje);
             Controls.Add(btnBackup);
+            Controls.Add(btnRestore);
+            Controls.Add(btnVerificarIntegridad);
+            Controls.Add(btnRecalcularDvh);
             Font = new System.Drawing.Font("Segoe UI", 9F);
             Name = "FrmErrores";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -176,5 +221,8 @@
         private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.Label lblMensaje;
         private System.Windows.Forms.Button btnBackup;
+        private System.Windows.Forms.Button btnRestore;
+        private System.Windows.Forms.Button btnVerificarIntegridad;
+        private System.Windows.Forms.Button btnRecalcularDvh;
     }
 }

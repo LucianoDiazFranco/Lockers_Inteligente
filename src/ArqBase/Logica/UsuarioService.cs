@@ -228,6 +228,38 @@ namespace LockersInteligentes.ArqBase.Logica
                 System.Diagnostics.Debug.WriteLine("Fallo al asignar permisos iniciales: " + ex.Message);
             }
         }
+        public IList<Usuario> VerificarIntegridad()
+        {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
+
+            List<Usuario> alterados = new List<Usuario>();
+
+            foreach (Usuario usuario in RepositorioFactoryArq.Instancia.Usuarios.ObtenerTodos())
+            {
+                if (!IntegridadService.EsIntegro(usuario, usuario.DVH))
+                    alterados.Add(usuario);
+            }
+
+            return alterados;
+        }
+        public int RecalcularDigitos()
+        {
+            GestorSesion.Instancia.ValidarPermiso(PermisoService.Patentes.GestionarUsuarios);
+
+            int actualizados = 0;
+
+            foreach (Usuario usuario in RepositorioFactoryArq.Instancia.Usuarios.ObtenerTodos())
+            {
+                RepositorioFactoryArq.Instancia.Usuarios.Actualizar(usuario);
+                actualizados++;
+            }
+
+            _historial.Grabar(TipoOperacion.Modificacion,
+                "Recálculo de dígitos verificadores: " + actualizados + " usuario(s).");
+
+            return actualizados;
+        }
+
 
     }
 }

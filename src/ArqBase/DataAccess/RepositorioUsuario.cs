@@ -1,6 +1,7 @@
-﻿using System;
-using LockersInteligentes.ArqBase.Entidades;
+﻿using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Servicios;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace LockersInteligentes.ArqBase.DataAccess
 {
@@ -15,7 +16,7 @@ namespace LockersInteligentes.ArqBase.DataAccess
             {
                 return
                     "SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Apellido, u.Correo, " +
-                    "       u.PasswordHash, u.PasswordSalt, u.Activo, " +
+                    "       u.PasswordHash, u.PasswordSalt, u.Activo, u.DVH, " +
                     "       r.IdRol, r.Nombre AS RolNombre, r.Descripcion AS RolDescripcion, " +
                     "       i.NumIdioma, i.Nombre AS IdiomaNombre, i.Codigo AS IdiomaCodigo, " +
                     "       i.EsPredeterminado " +
@@ -30,9 +31,9 @@ namespace LockersInteligentes.ArqBase.DataAccess
             {
                 return
                     "INSERT INTO dbo.Usuario (NombreUsuario, Nombre, Apellido, Correo, PasswordHash, " +
-                    "                         PasswordSalt, IdRol, IdIdioma, Activo) " +
+                    "                         PasswordSalt, IdRol, IdIdioma, Activo, DVH) " +
                     "VALUES (@NombreUsuario, @Nombre, @Apellido, @Correo, @PasswordHash, " +
-                    "        @PasswordSalt, @IdRol, @IdIdioma, @Activo)";
+                    "        @PasswordSalt, @IdRol, @IdIdioma, @Activo, @DVH)";
             }
         }
         protected override string SqlUpdate
@@ -43,7 +44,7 @@ namespace LockersInteligentes.ArqBase.DataAccess
                     "UPDATE dbo.Usuario SET NombreUsuario = @NombreUsuario, Nombre = @Nombre, " +
                     "       Apellido = @Apellido, Correo = @Correo, PasswordHash = @PasswordHash, " +
                     "       PasswordSalt = @PasswordSalt, IdRol = @IdRol, " +
-                    "       IdIdioma = @IdIdioma, Activo = @Activo " +
+                    "       IdIdioma = @IdIdioma, Activo = @Activo , DVH = @DVH " +
                     "WHERE IdUsuario = @Id";
             }
         }
@@ -92,6 +93,7 @@ namespace LockersInteligentes.ArqBase.DataAccess
             usuario.PasswordHash = lector["PasswordHash"].ToString();
             usuario.PasswordSalt = lector["PasswordSalt"].ToString();
             usuario.Activo = Convert.ToBoolean(lector["Activo"]);
+            usuario.DVH = lector["DVH"] == DBNull.Value ? null : lector["DVH"].ToString();
 
             usuario.Rol = new Rol();
             usuario.Rol.Id = Convert.ToInt32(lector["IdRol"]);
@@ -120,6 +122,7 @@ namespace LockersInteligentes.ArqBase.DataAccess
             comando.Parameters.AddWithValue("@PasswordSalt", entidad.PasswordSalt);
             comando.Parameters.AddWithValue("@IdRol", entidad.Rol.Id);
             comando.Parameters.AddWithValue("@Activo", entidad.Activo);
+            comando.Parameters.AddWithValue("@DVH", IntegridadService.CalcularDVH(entidad));
 
             comando.Parameters.AddWithValue("@IdIdioma",
                 entidad.IdiomaPreferido != null ? (object)entidad.IdiomaPreferido.Id : DBNull.Value);

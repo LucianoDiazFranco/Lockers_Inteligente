@@ -44,6 +44,16 @@ namespace LockersInteligentes.ArqBase.ArqBase
 
             // El esquema se toma del 01_Esquema.sql que ya existe en el proyecto:
             // es la fuente de verdad de la estructura y no tiene sentido duplicarla.
+            script.AppendLine("USE master;");
+            script.AppendLine("GO");
+            script.AppendLine();
+            script.AppendLine("IF DB_ID('LockersInteligentes') IS NOT NULL");
+            script.AppendLine("BEGIN");
+            script.AppendLine("    ALTER DATABASE LockersInteligentes SET SINGLE_USER WITH ROLLBACK IMMEDIATE;");
+            script.AppendLine("    DROP DATABASE LockersInteligentes;");
+            script.AppendLine("END");
+            script.AppendLine("GO");
+            script.AppendLine();
             script.AppendLine("/* ===================== ESQUEMA ===================== */");
             script.AppendLine();
             script.AppendLine(File.ReadAllText(rutaEsquema));
@@ -191,5 +201,67 @@ namespace LockersInteligentes.ArqBase.ArqBase
 
             return "N'" + valor.ToString().Replace("'", "''") + "'";
         }
+
+        public static int Restaurar(string cadenaConexion, string rutaScript)
+        {
+            if (!File.Exists(rutaScript))
+                throw new FileNotFoundException("No se encontró el script: " + rutaScript);
+
+            string contenido = File.ReadAllText(rutaScript, Encoding.UTF8);
+            List<string> lotes = SepararPorGo(contenido);
+
+            // Se apunta a master porque el script hace DROP y CREATE de la base.
+            SqlConnectionStringBuilder constructor = new SqlConnectionStringBuilder(cadenaConexion);
+            constructor.InitialCatalog = "master";
+
+            int ejecutados = 0;
+
+            using (SqlConnection conexion = new SqlConnection(constructor.ConnectionString))
+            {
+                conexion.Open();
+
+                foreach (string lote in lotes)
+                {
+                    if (string.IsNullOrWhiteSpace(lote))
+                        continue;
+
+                    using (SqlCommand comando = new SqlCommand(lote, conexion))
+                    {
+                        // Un script completo puede tardar: el timeout por defecto
+                        // de 30 segundos se queda corto con muchas filas.
+                        comando.CommandTimeout = 300;
+                        comando.ExecuteNonQuery();
+                        ejecutados++;
+                    }
+                }
+            }
+
+            return ejecutados;
+        }
+
+        private static List<string> SepararPorGo(string script)
+        {
+            List<string> lotes = new List<string>();
+            StringBuilder actual = new StringBuilder();
+
+            foreach (string linea in script.Split('\n'))
+            {
+                if (linea.Trim().Equals("GO", StringComparison.OrdinalIgnoreCase))
+                {
+                    lotes.Add(actual.ToString());
+                    actual.Clear();
+                }
+                else
+                {
+                    actual.AppendLine(linea);
+                }
+            }
+
+            if (actual.Length > 0)
+                lotes.Add(actual.ToString());
+
+            return lotes;
+        }
+
     }
 }
