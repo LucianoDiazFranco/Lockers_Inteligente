@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.ArqBase.Composite;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace LockersInteligentes.ArqBase.Logica
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
         private readonly HistorialService _historial = new HistorialService();
         private const int LongitudMinimaPassword = 8;

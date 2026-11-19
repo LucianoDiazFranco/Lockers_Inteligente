@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Entidades;
 using Microsoft.Data.SqlClient;
 

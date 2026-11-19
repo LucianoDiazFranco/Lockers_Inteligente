@@ -2,10 +2,11 @@
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Servicios;
+using LockersInteligentes.ArqBase.Contratos;
 
 namespace LockersInteligentes.ArqBase.Logica
 {
-    public class LoginService
+    public class LoginService : ILoginService
     {
         private const string MensajeCredencialesInvalidas = "Usuario o contraseña incorrectos.";
         private readonly HistorialService _historial = new HistorialService();

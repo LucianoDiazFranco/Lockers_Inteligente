@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.ArqBase.ArqBase;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Logica;
 using LockersInteligentes.UI.Gestion;

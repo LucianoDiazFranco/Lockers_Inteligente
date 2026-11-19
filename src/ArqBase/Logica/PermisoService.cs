@@ -1,4 +1,5 @@
 ﻿using LockersInteligentes.ArqBase.Composite;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Excepciones;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace LockersInteligentes.ArqBase.Logica
 {
-    public class PermisoService
+    public class PermisoService : IPermisoService
     {
         /// <summary>Nombres de las patentes del sistema, para no escribir literales sueltos.</summary>
         public static class Patentes

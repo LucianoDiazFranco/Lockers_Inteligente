@@ -1,6 +1,6 @@
 ﻿using LockersInteligentes.Dominio.Entidades;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.BLL.Modelos
 {
     public class EstadoLockerVista
     {

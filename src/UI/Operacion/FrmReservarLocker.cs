@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Logica;
-using LockersInteligentes.BLL;
+using LockersInteligentes.BLL.Facade;
+using LockersInteligentes.BLL.Modelos;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
 

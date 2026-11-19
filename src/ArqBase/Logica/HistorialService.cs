@@ -1,4 +1,5 @@
-﻿using LockersInteligentes.ArqBase.DataAccess;
+﻿using LockersInteligentes.ArqBase.Contratos;
+using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
 using System;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 
 namespace LockersInteligentes.ArqBase.Logica
 {
-    public class HistorialService
+    public class HistorialService : IHistorialService
     {
         public void Grabar(TipoOperacion tipo, string detalle,
                            int? idLocker = null, int? idOrden = null)

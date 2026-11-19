@@ -4,7 +4,7 @@ using LockersInteligentes.ArqBase.Servicios;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.BLL.Factories
 {
     public static class CodigoAccesoFactory
     {

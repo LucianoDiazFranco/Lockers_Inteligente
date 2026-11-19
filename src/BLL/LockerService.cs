@@ -6,10 +6,12 @@ using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL.Contratos;
+using LockersInteligentes.BLL.Modelos;
 
 namespace LockersInteligentes.BLL
 {
-    public class LockerService
+    public class LockerService : ILockerService
     {
         private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> ListarEdificios()

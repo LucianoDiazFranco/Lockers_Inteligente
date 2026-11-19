@@ -5,10 +5,11 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LockersInteligentes.BLL.Contratos;
 
 namespace LockersInteligentes.BLL
 {
-    public class EdificioService
+    public class EdificioService : IEdificioService
     {
         private readonly HistorialService _historial = new HistorialService();
         public IList<Edificio> Listar()

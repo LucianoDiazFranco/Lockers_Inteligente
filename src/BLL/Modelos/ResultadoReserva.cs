@@ -1,6 +1,6 @@
 ﻿using LockersInteligentes.Dominio.Entidades;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.BLL.Modelos
 {
     /// <summary>
     /// Resultado de CU.Op.001. Devuelve el PIN en claro porque es el único momento

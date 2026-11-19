@@ -1,5 +1,6 @@
-﻿using LockersInteligentes.ArqBase.Logica;
-using LockersInteligentes.BLL;
+﻿using LockersInteligentes.ArqBase.Contratos;
+using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL.Facade;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
 using System;

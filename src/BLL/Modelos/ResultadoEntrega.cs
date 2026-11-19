@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.BLL.Modelos
 {
     /// <summary>
     /// Resultado de CU.Op.002. Devuelve el PIN de retiro en claro porque es el único

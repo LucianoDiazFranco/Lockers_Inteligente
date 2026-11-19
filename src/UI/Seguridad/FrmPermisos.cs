@@ -1,8 +1,9 @@
 ﻿using LockersInteligentes.ArqBase.Composite;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Entidades;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Logica;
-using LockersInteligentes.BLL;
+using LockersInteligentes.BLL.Facade;
 using System;
 using System.Collections.Generic;
 using System.Data;

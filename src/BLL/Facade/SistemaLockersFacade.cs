@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using LockersInteligentes.ArqBase.Composite;
+﻿using LockersInteligentes.ArqBase.Composite;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Entidades;
+using LockersInteligentes.ArqBase.Contratos;
 using LockersInteligentes.ArqBase.Enums;
 using LockersInteligentes.ArqBase.Logica;
+using LockersInteligentes.BLL.Contratos;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Enums;
+using System;
+using System.Collections.Generic;
+using LockersInteligentes.BLL.Modelos;
 
-namespace LockersInteligentes.BLL
+namespace LockersInteligentes.BLL.Facade
 {
     /// <summary>
     /// Patrón Facade: punto de entrada único al sistema.
@@ -27,16 +31,16 @@ namespace LockersInteligentes.BLL
     {
         private static readonly SistemaLockersFacade _instancia = new SistemaLockersFacade();
 
-        private readonly LoginService _login = new LoginService();
-        private readonly UsuarioService _usuarios = new UsuarioService();
-        private readonly PermisoService _permisos = new PermisoService();
-        private readonly HistorialService _historial = new HistorialService();
-        private readonly EdificioService _edificios = new EdificioService();
-        private readonly LockerService _lockers = new LockerService();
-        private readonly ResidenteService _residentes = new ResidenteService();
-        private readonly RepartidorService _repartidores = new RepartidorService();
-        private readonly EntregaService _entregas = new EntregaService();
-        private readonly ReporteService _reportes = new ReporteService();
+        private readonly ILoginService _login = new LoginService();
+        private readonly IUsuarioService _usuarios = new UsuarioService();
+        private readonly IPermisoService _permisos = new PermisoService();
+        private readonly IHistorialService _historial = new HistorialService();
+        private readonly IEdificioService _edificios = new EdificioService();
+        private readonly ILockerService _lockers = new LockerService();
+        private readonly IResidenteService _residentes = new ResidenteService();
+        private readonly IRepartidorService _repartidores = new RepartidorService();
+        private readonly IEntregaService _entregas = new EntregaService();
+        private readonly IReporteService _reportes = new ReporteService();
 
         private SistemaLockersFacade()
         {

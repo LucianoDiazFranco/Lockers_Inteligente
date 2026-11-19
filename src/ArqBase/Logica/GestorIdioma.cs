@@ -1,4 +1,5 @@
-﻿using LockersInteligentes.ArqBase.DataAccess;
+﻿using LockersInteligentes.ArqBase.Contratos;
+using LockersInteligentes.ArqBase.DataAccess;
 using LockersInteligentes.ArqBase.Entidades;
 using System;
 using System.Collections.Generic;

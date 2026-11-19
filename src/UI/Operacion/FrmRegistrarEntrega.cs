@@ -1,5 +1,4 @@
 ﻿using LockersInteligentes.ArqBase.ArqBase;
-using LockersInteligentes.BLL;
 using LockersInteligentes.Dominio.Entidades;
 using LockersInteligentes.Dominio.Excepciones;
 using LockersInteligentes.ArqBase.Logica;
@@ -10,6 +9,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LockersInteligentes.ArqBase.Excepciones;
+using LockersInteligentes.ArqBase.Contratos;
+using LockersInteligentes.BLL.Facade;
+using LockersInteligentes.BLL.Modelos;
 
 namespace LockersInteligentes.UI.Operacion
 {

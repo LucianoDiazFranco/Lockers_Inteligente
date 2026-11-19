@@ -6,10 +6,11 @@ using LockersInteligentes.ArqBase.Logica;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LockersInteligentes.BLL.Contratos;
 
 namespace LockersInteligentes.BLL
 {
-    public class ReporteService
+    public class ReporteService : IReporteService
     {
         private readonly HistorialService _historial = new HistorialService();
 

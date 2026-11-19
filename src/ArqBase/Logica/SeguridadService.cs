@@ -1,9 +1,10 @@
-﻿using LockersInteligentes.ArqBase.Servicios;
+﻿using LockersInteligentes.ArqBase.Contratos;
+using LockersInteligentes.ArqBase.Servicios;
 
 
 namespace LockersInteligentes.ArqBase.Logica
 {
-    public class SeguridadService
+    public class SeguridadService : ISeguridadService
     {
         public void GenerarCredenciales(string password, out string salt, out string hash)
         {

@@ -9,10 +9,13 @@ using System.Collections.Generic;
 using System.Linq;
 using LockersInteligentes.Dominio.Excepciones;
 using LockersInteligentes.ArqBaseExcepciones;
+using LockersInteligentes.BLL.Contratos;
+using LockersInteligentes.BLL.Factories;
+using LockersInteligentes.BLL.Modelos;
 
 namespace LockersInteligentes.BLL
 {
-    public class EntregaService
+    public class EntregaService : IEntregaService
     {
         private readonly EmailService _email = new EmailService();
         private readonly HistorialService _historial = new HistorialService();
